@@ -2,6 +2,7 @@ package com.blesk.userservice.Value;
 
 public class Messages {
 
+    public static final String USERS_FIRST_ACCOUNT_NOT_NULL = "Nezadali ste identifikačné čislo používateľského konta";
     public static final String USERS_FIRST_NAME_NOT_NULL = "Nezadali ste meno";
     public static final String USERS_FIRST_NAME_SIZE = "Meno je príliž krátke alebo dlhé";
     public static final String USERS_LAST_NAME_NOT_NULL = "Nezadali ste priezvisko";

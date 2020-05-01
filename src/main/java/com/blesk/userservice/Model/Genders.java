@@ -9,13 +9,14 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @DynamicInsert
 @DynamicUpdate
 @Entity(name = "Genders")
 @Table(name = "genders", uniqueConstraints = {@UniqueConstraint(name = "gender_id", columnNames = "gender_id"), @UniqueConstraint(name = "gender_name", columnNames = "name")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, scope = Genders.class)
-public class Genders {
+public class Genders implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

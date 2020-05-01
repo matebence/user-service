@@ -13,20 +13,28 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @DynamicInsert
 @DynamicUpdate
 @Entity(name = "Users")
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(name = "user_id", columnNames = "user_id"), @UniqueConstraint(name = "user_tel", columnNames = "tel")})
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(name = "user_id", columnNames = "user_id"), @UniqueConstraint(name = "user_account_id", columnNames = "account_id"), @UniqueConstraint(name = "user_tel", columnNames = "tel")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, scope = Users.class)
 @SQLDelete(sql = "UPDATE users SET is_deleted = TRUE, deleted_at = NOW() WHERE user_id = ?")
-public class Users {
+public class Users implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
+
+    @NotNull(message = Messages.USERS_FIRST_ACCOUNT_NOT_NULL)
+    @Column(name = "account_id")
+    private Long accountId;
+
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER, mappedBy = "users")
+    private Places places;
 
     @NotNull(message = Messages.USERS_FIRST_NAME_NOT_NULL)
     @Size(min = 5, max = 20, message = Messages.USERS_FIRST_NAME_SIZE)
@@ -71,6 +79,27 @@ public class Users {
     @Column(name = "deleted_at", updatable = false)
     private Timestamp deletedAt;
 
+    public Users(Places places, Long accountId, String firstName, String lastName, String gender, Double balance, String tel, String img) {
+        this.places = places;
+        this.accountId = accountId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.balance = balance;
+        this.tel = tel;
+        this.img = img;
+    }
+
+    public Users(Long accountId, String firstName, String lastName, String gender, Double balance, String tel, String img) {
+        this.accountId = accountId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.balance = balance;
+        this.tel = tel;
+        this.img = img;
+    }
+
     public Users(String firstName, String lastName, String gender, Double balance, String tel, String img) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -89,6 +118,10 @@ public class Users {
         this.balance = balance;
     }
 
+    public Users(Places places) {
+        this.places = places;
+    }
+
     public Users() {
     }
 
@@ -98,6 +131,16 @@ public class Users {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Places getPlaces() {
+        return this.places;
+    }
+
+    public void setPlaces(Places places) {
+        this.places = places;
+        if (this.places != null)
+            this.places.setUsers(this);
     }
 
     public String getFirstName() {

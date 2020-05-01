@@ -5,22 +5,30 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @DynamicInsert
 @DynamicUpdate
 @Entity(name = "Places")
 @Table(name = "places", uniqueConstraints = {@UniqueConstraint(name = "place_id", columnNames = "place_id")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, scope = Places.class)
-public class Places {
+public class Places implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "place_id")
     private Long placeId;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Users users;
 
     @NotNull(message = Messages.PLACES_COUNTRY_NOT_NULL)
     @Size(min = 5, max = 64, message = Messages.PLACES_COUNTRY_SIZE)
@@ -56,6 +64,17 @@ public class Places {
     @Column(name = "code", nullable = false)
     private String code;
 
+    public Places(Users users, String country, String region, String district, String place, String street, Integer zip, String code) {
+        this.users = users;
+        this.country = country;
+        this.region = region;
+        this.district = district;
+        this.place = place;
+        this.street = street;
+        this.zip = zip;
+        this.code = code;
+    }
+
     public Places(String country, String region, String district, String place, String street, Integer zip, String code) {
         this.country = country;
         this.region = region;
@@ -64,6 +83,10 @@ public class Places {
         this.street = street;
         this.zip = zip;
         this.code = code;
+    }
+
+    public Places(Users users) {
+        this.users = users;
     }
 
     public Places() {
@@ -75,6 +98,14 @@ public class Places {
 
     public void setPlaceId(Long placeId) {
         this.placeId = placeId;
+    }
+
+    public Users getUsers() {
+        return this.users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     public String getCountry() {
