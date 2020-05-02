@@ -2,6 +2,17 @@ package com.blesk.userservice.Value;
 
 public class Messages {
 
+    public static final String TYPE_MISMATCH_EXCEPTION = "Nesprávný formát URL adresi";
+    public static final String REQUEST_BODY_NOT_FOUND_EXCEPTION = "Prázdna požiadavka";
+    public static final String PAGE_NOT_FOUND_EXCEPTION = "Je nám ľúto, ale požadovaná stránka nebola nájdená";
+    public static final String NULL_POINTER_EXCEPTION = "Ľutujeme, ale nastala chyba";
+    public static final String AUTH_EXCEPTION = "Ľutujeme, ale stránka nie je k dispozícií";
+    public static final String AUTH_REQUIRED_EXCEPTION = "Prístup odmietnutý";
+    public static final String SQL_EXCEPTION = "Operácia sa neuskutočnila";
+    public static final String EXCEPTION = "Nastala neočakávaná chyba";
+
+
+
     public static final String USERS_FIRST_ACCOUNT_NOT_NULL = "Nezadali ste identifikačné čislo používateľského konta";
     public static final String USERS_FIRST_NAME_NOT_NULL = "Nezadali ste meno";
     public static final String USERS_FIRST_NAME_SIZE = "Meno je príliž krátke alebo dlhé";
@@ -38,6 +49,7 @@ public class Messages {
 
     public static final String CONTAINS_VALIDATOR_DEFAULT = "Tento údaj neeviduje v databáze";
     public static final String PAGINATION_ERROR = "Požiadavku sa nepodarilo spracovať, chyba stránkovania";
+    public static final String UNIQUE_FIELD_DEFAULT = "Obsah pola nie je jedinečné";
 
 
 
@@ -58,4 +70,10 @@ public class Messages {
     public static final String UPDATE_USER = "Aktualizovanie profilu sa nepodarilo";
     public static final String GET_USER = "Ľutujeme, ale profil neexistuje";
     public static final String GET_ALL_USERS = "Nenašiel sa žiadný profil";
+
+
+
+    public static final String USER_ACCOUNT_ID_UNIQUE = "Identifikačné číslo používateľského konta už existuje";
+    public static final String USER_TEL_UNIQUE = "Telefóne číslo už existuje";
+    public static final String GENDER_NAME_UNIQUE = "Názov pohlavia uz existuje";
 }
