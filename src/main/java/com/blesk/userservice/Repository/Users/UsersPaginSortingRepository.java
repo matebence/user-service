@@ -1,7 +1,9 @@
 package com.blesk.userservice.Repository.Users;
 
+import com.blesk.userservice.Model.Users;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsersPaginSortingRepository {
+public interface UsersPaginSortingRepository extends PagingAndSortingRepository<Users, Long> {
 }
