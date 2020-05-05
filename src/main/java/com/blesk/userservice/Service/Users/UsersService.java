@@ -10,9 +10,7 @@ public interface UsersService {
 
     Users createUser(Users users);
 
-    Boolean softDeleteUser(Long userId);
-
-    Boolean deleteUser(Long userId);
+    Boolean deleteUser(Long userId, boolean su);
 
     Boolean updateUser(Users users);
 

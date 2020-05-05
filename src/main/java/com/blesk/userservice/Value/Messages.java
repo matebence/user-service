@@ -49,6 +49,7 @@ public class Messages {
 
     public static final String CONTAINS_VALIDATOR_DEFAULT = "Tento údaj neeviduje v databáze";
     public static final String PAGINATION_ERROR = "Požiadavku sa nepodarilo spracovať, chyba stránkovania";
+    public static final String SEARCH_ERROR = "Kritériám nevyhoveli žiadné záznamy";
     public static final String UNIQUE_FIELD_DEFAULT = "Obsah pola nie je jedinečné";
 
 

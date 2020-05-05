@@ -35,21 +35,14 @@ public class FeignClientImpl implements FeignClient, ErrorDecoder {
 
     @Override
     public Exception decode(String s, feign.Response response) {
-        UserServiceException userServiceException;
         try {
             if (response.status() >= 400 && response.status() <= 499) {
-                userServiceException = new UserServiceException(new ObjectMapper().readValue(CharStreams.toString(response.body().asReader(StandardCharsets.UTF_8)), Response.class).getMessage());
-                userServiceException.setHttpStatus(HttpStatus.BAD_REQUEST);
-                return userServiceException;
+                return new UserServiceException(new ObjectMapper().readValue(CharStreams.toString(response.body().asReader(StandardCharsets.UTF_8)), Response.class).getMessage(), HttpStatus.BAD_REQUEST);
             } else if (response.status() >= 500 && response.status() <= 599) {
-                userServiceException = new UserServiceException(new ObjectMapper().readValue(CharStreams.toString(response.body().asReader(StandardCharsets.UTF_8)), Response.class).getMessage());
-                userServiceException.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-                return userServiceException;
+                return new UserServiceException(new ObjectMapper().readValue(CharStreams.toString(response.body().asReader(StandardCharsets.UTF_8)), Response.class).getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } catch (IOException e) {
-            userServiceException = new UserServiceException(Messages.EXCEPTION);
-            userServiceException.setHttpStatus(HttpStatus.NOT_FOUND);
-            return userServiceException;
+            return new UserServiceException(Messages.EXCEPTION, HttpStatus.NOT_FOUND);
         }
         return errorStatus(s, response);
     }

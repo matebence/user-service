@@ -6,6 +6,7 @@ import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,35 +29,33 @@ public class UsersServiceImpl implements UsersService {
     public Users createUser(Users users) {
         Users user = this.usersDAO.save(users);
         if (user == null)
-            throw new UserServiceException(Messages.CREATE_USER);
+            throw new UserServiceException(Messages.CREATE_USER, HttpStatus.NOT_FOUND);
         return user;
     }
 
     @Override
     @Transactional
-    public Boolean softDeleteUser(Long userId) {
-        Users users = this.usersDAO.get(userId, false);
-        if (users == null)
-            throw new UserServiceException(Messages.GET_USER);
-        return this.usersDAO.softDelete(users);
-    }
-
-    @Override
-    @Transactional
-    public Boolean deleteUser(Long userId) {
-        Users users = this.usersDAO.get(Users.class, userId);
-        if (users == null)
-            throw new UserServiceException(Messages.GET_USER);
-        if (!this.usersDAO.delete("users", "user_id", userId))
-            throw new UserServiceException(Messages.DELETE_USER);
-        return true;
+    public Boolean deleteUser(Long userId, boolean su) {
+        if (su) {
+            Users users = this.usersDAO.get(Users.class, userId);
+            if (users == null)
+                throw new UserServiceException(Messages.GET_USER, HttpStatus.NOT_FOUND);
+            if (!this.usersDAO.delete("users", "user_id", userId))
+                throw new UserServiceException(Messages.DELETE_USER, HttpStatus.NOT_FOUND);
+            return true;
+        } else {
+            Users users = this.usersDAO.get(userId, false);
+            if (users == null)
+                throw new UserServiceException(Messages.GET_USER, HttpStatus.NOT_FOUND);
+            return this.usersDAO.softDelete(users);
+        }
     }
 
     @Override
     @Transactional
     public Boolean updateUser(Users users) {
         if (!this.usersDAO.update(users))
-            throw new UserServiceException(Messages.UPDATE_USER);
+            throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.NOT_FOUND);
         return true;
     }
 
@@ -75,7 +74,7 @@ public class UsersServiceImpl implements UsersService {
     public Users findUserByFirstName(String firstName, boolean isDeleted) {
         Users users = this.usersDAO.getItemByColumn("firstName", firstName, isDeleted);
         if (users == null)
-            throw new UserServiceException(Messages.GET_ALL_USERS);
+            throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.NOT_FOUND);
 
         return users;
     }
@@ -85,7 +84,7 @@ public class UsersServiceImpl implements UsersService {
     public Users findUserByLastName(String lastName, boolean isDeleted) {
         Users users = this.usersDAO.getItemByColumn("lastName", lastName, isDeleted);
         if (users == null)
-            throw new UserServiceException(Messages.GET_ALL_USERS);
+            throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.NOT_FOUND);
 
         return users;
     }

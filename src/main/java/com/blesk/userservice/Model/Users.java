@@ -116,6 +116,12 @@ public class Users implements Serializable {
         this.img = img;
     }
 
+    public Users(String userName, String email, Long accountId) {
+        this.userName = userName;
+        this.email = email;
+        this.accountId = accountId;
+    }
+
     public Users(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -138,6 +144,30 @@ public class Users implements Serializable {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Long getAccountId() {
+        return this.accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
     public Places getPlaces() {

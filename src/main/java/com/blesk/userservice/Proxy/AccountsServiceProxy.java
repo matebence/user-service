@@ -9,11 +9,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 
 @Repository
 @FeignClient(name = "account-service", url = "192.168.99.100:7000/api")
-public interface AccountServiceProxy {
+public interface AccountsServiceProxy {
 
     @GetMapping("/accounts/{accountId}")
     @Headers("Content-Type: application/json")
@@ -21,9 +20,9 @@ public interface AccountServiceProxy {
 
     @GetMapping("/accounts/page/{pageNumber}/limit/{pageSize}")
     @Headers("Content-Type: application/json")
-    CollectionModel<List<Users>> retrieveAllAccounts(@PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize);
+    CollectionModel<Users> retrieveAllAccounts(@PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize);
 
     @PostMapping("/accounts/search")
     @Headers("Content-Type: application/json")
-    CollectionModel<List<Users>> searchForAccounts(@RequestBody HashMap<String, HashMap<String, String>> search);
+    CollectionModel<Users> searchForAccounts(@RequestBody HashMap<String, HashMap<String, String>> search);
 }

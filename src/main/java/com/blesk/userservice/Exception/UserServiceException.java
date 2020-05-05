@@ -6,9 +6,9 @@ public class UserServiceException extends RuntimeException {
 
     private HttpStatus httpStatus;
 
-    public UserServiceException(String message) {
+    public UserServiceException(String message, HttpStatus httpStatus) {
         super(message);
-        this.httpStatus = HttpStatus.NOT_FOUND;
+        this.httpStatus = httpStatus;
     }
 
     public HttpStatus getHttpStatus() {
