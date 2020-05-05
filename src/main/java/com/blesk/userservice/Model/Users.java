@@ -3,16 +3,14 @@ package com.blesk.userservice.Model;
 import com.blesk.userservice.Validator.Contains;
 import com.blesk.userservice.Value.Messages;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -29,6 +27,15 @@ public class Users implements Serializable {
     @Column(name = "user_id")
     private Long userId;
 
+    @Transient
+    @JsonProperty
+    private String userName;
+
+    @Transient
+    @JsonProperty
+    private String email;
+
+    @JsonProperty
     @NotNull(message = Messages.USERS_FIRST_ACCOUNT_NOT_NULL)
     @Column(name = "account_id")
     private Long accountId;

@@ -85,9 +85,9 @@ public class UserServiceHandler {
     }
 
     @ExceptionHandler(UserServiceException.class)
-    public final ResponseEntity<Response> handleResourcesException(Exception ex) {
+    public final ResponseEntity<Response> handleResourcesException(UserServiceException ex) {
         Response errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), ex.getMessage(), true);
-        return new ResponseEntity<>(errorObj, new HttpHeaders(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorObj, new HttpHeaders(), ex.getHttpStatus());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
