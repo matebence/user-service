@@ -62,9 +62,13 @@ public class DAOImpl<T> implements DAO<T> {
     @Override
     public T get(Class c, Long id) {
         Session session = this.entityManager.unwrap(Session.class);
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(c);
+        Root<T> root = criteriaQuery.from(c);
+
         try {
-            return (T) session.get(c, id);
-        } catch (Exception e) {
+            return session.createQuery(criteriaQuery.where(criteriaBuilder.equal(root.get("accountId"), id))).getSingleResult();
+        } catch (Exception ex) {
             session.clear();
             session.close();
             return null;

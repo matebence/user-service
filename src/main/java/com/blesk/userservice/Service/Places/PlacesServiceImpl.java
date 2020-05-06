@@ -6,10 +6,12 @@ import com.blesk.userservice.Model.Places;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.LockModeType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,7 @@ public class PlacesServiceImpl implements PlacesService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.WRITE)
     public Places createPlace(Places places) {
         Places place = this.placesDAO.save(places);
         if (place == null)
@@ -35,6 +38,7 @@ public class PlacesServiceImpl implements PlacesService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.WRITE)
     public Boolean deletePlace(Long placeId) {
         Places places = this.placesDAO.get(Places.class, placeId);
         if (places == null)
@@ -46,6 +50,7 @@ public class PlacesServiceImpl implements PlacesService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.WRITE)
     public Boolean updatePlace(Places places) {
         if (!this.placesDAO.update(places))
             throw new UserServiceException(Messages.UPDATE_PLACE, HttpStatus.NOT_FOUND);
@@ -54,6 +59,7 @@ public class PlacesServiceImpl implements PlacesService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public Places findPlaceByName(String name) {
         Places places = this.placesDAO.getItemByColumn(Places.class, "name", name);
         if (places == null)
@@ -64,6 +70,7 @@ public class PlacesServiceImpl implements PlacesService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public List<Places> getAllPlaces(int pageNumber, int pageSize) {
         List<Places> places = this.placesDAO.getAll(Places.class, pageNumber, pageSize);
         if (places.isEmpty())
@@ -73,6 +80,7 @@ public class PlacesServiceImpl implements PlacesService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForPlace(HashMap<String, HashMap<String, String>> criteria) {
         if (criteria.get(Keys.PAGINATION) == null)
             throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.NOT_FOUND);
@@ -87,6 +95,7 @@ public class PlacesServiceImpl implements PlacesService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public Places getPlace(Long placeId) {
         Places place = this.placesDAO.get(Places.class, placeId);
         if (place == null)

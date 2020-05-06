@@ -7,10 +7,12 @@ import com.blesk.userservice.Model.Genders;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.LockModeType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ public class GendersServiceImpl implements GendersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.WRITE)
     public Genders createGender(Genders genders) {
         Genders gender = this.gendersDAO.save(genders);
         if (gender == null)
@@ -36,6 +39,7 @@ public class GendersServiceImpl implements GendersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.WRITE)
     public Boolean deleteGender(Long genderId) {
         Genders genders = this.gendersDAO.get(GendersDAO.class, genderId);
         if (genders == null)
@@ -47,6 +51,7 @@ public class GendersServiceImpl implements GendersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.WRITE)
     public Boolean updateGender(Genders genders) {
         if (!this.gendersDAO.update(genders))
             throw new UserServiceException(Messages.UPDATE_GENDER, HttpStatus.NOT_FOUND);
@@ -55,6 +60,7 @@ public class GendersServiceImpl implements GendersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public Genders findGenderByName(String name) {
         Genders genders = this.gendersDAO.getItemByColumn(Genders.class, "name", name);
         if (genders == null)
@@ -65,6 +71,7 @@ public class GendersServiceImpl implements GendersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public List<Genders> getAllGenders(int pageNumber, int pageSize) {
         List<Genders> genders = this.gendersDAO.getAll(Genders.class, pageNumber, pageSize);
         if (genders.isEmpty())
@@ -74,6 +81,7 @@ public class GendersServiceImpl implements GendersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForGender(HashMap<String, HashMap<String, String>> criteria) {
         if (criteria.get(Keys.PAGINATION) == null)
             throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.NOT_FOUND);
@@ -88,6 +96,7 @@ public class GendersServiceImpl implements GendersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public Genders getGender(Long genderId) {
         Genders gender = this.gendersDAO.get(Genders.class, genderId);
         if (gender == null)

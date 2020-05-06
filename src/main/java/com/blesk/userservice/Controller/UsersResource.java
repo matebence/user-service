@@ -19,12 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.html.parser.Entity;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -119,28 +116,24 @@ public class UsersResource {
     }
 
     @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
-    @GetMapping("/users/{userId}")
+    @GetMapping("/users/{accountId}")
     @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Users> retrieveUsers(@PathVariable long userId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public EntityModel<Users> retrieveUsers(@PathVariable long accountId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("VIEW_USERS")) {
             throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         }
 
-        Users users = this.usersService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Users users = this.usersService.getUser(accountId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (users == null) {
             throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
         }
 
-        EntityModel<Users> accountDetails = this.accountsServiceProxy.retrieveAccounts(users.getAccountId());
-
-        if (accountDetails.getContent() != null) {
-            users.setUserName(accountDetails.getContent().getUserName() != null ? accountDetails.getContent().getUserName() : "");
-            users.setEmail(accountDetails.getContent().getEmail() != null ? accountDetails.getContent().getEmail() : "");
-        }
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Arrays.asList(new Long[]{accountId}));
+        users = this.performJoin(Arrays.asList(new Users[]{users}), accountDetails).get(0);
 
         EntityModel<Users> entityModel = new EntityModel<Users>(users);
-        entityModel.add(linkTo(methodOn(this.getClass()).retrieveUsers(userId, httpServletRequest, httpServletResponse)).withSelfRel());
+        entityModel.add(linkTo(methodOn(this.getClass()).retrieveUsers(accountId, httpServletRequest, httpServletResponse)).withSelfRel());
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveAllUsers(UsersResource.DEFAULT_NUMBER, UsersResource.DEFAULT_PAGE_SIZE, httpServletRequest, httpServletResponse)).withRel("all-users"));
 
         return entityModel;
@@ -159,6 +152,9 @@ public class UsersResource {
         if (users == null || users.isEmpty()) {
             throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.BAD_REQUEST);
         }
+
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", users.stream().map(Users::getAccountId).collect(Collectors.toList()));
+        users = this.performJoin(users, accountDetails);
 
         CollectionModel<List<Users>> collectionModel = new CollectionModel(users);
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllUsers(pageNumber, pageSize, httpServletRequest, httpServletResponse)).withSelfRel());
@@ -185,7 +181,11 @@ public class UsersResource {
             throw new UserServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
         }
 
-        CollectionModel<List<Users>> collectionModel = new CollectionModel((List<Users>) users.get("results"));
+        List<Users> user = (List<Users>) users.get("results");
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", user.stream().map(Users::getAccountId).collect(Collectors.toList()));
+        user = this.performJoin(user, accountDetails);
+
+        CollectionModel<List<Users>> collectionModel = new CollectionModel(user);
         collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withSelfRel());
 
         if ((boolean) users.get("hasPrev")) {
@@ -196,5 +196,22 @@ public class UsersResource {
         }
 
         return collectionModel;
+    }
+
+    private List<Users> performJoin(List<Users> users, CollectionModel<Users> accountDetails){
+        if (accountDetails != null && accountDetails.getContent().size() == users.size()) {
+            Iterator<Users> usersIterator = users.iterator();
+            Iterator<Users> accountDetailsIterator = accountDetails.iterator();
+
+            while (usersIterator.hasNext() && accountDetailsIterator.hasNext()) {
+                Users usersIteratorValue = usersIterator.next();
+                Users accountDetailsIteratorValue = accountDetailsIterator.next();
+                usersIteratorValue.setUserName(accountDetailsIteratorValue.getUserName());
+                usersIteratorValue.setEmail(accountDetailsIteratorValue.getEmail());
+            }
+            return users;
+        }else{
+            return Collections.emptyList();
+        }
     }
 }

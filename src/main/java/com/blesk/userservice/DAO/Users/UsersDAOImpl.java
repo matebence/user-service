@@ -50,7 +50,7 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
         Root<Users> root = criteriaQuery.from(Users.class);
 
         try {
-            return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get("userId"), id), criteriaBuilder.equal(root.get("isDeleted"), isDeleted)))).getSingleResult();
+            return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get("accountId"), id), criteriaBuilder.equal(root.get("isDeleted"), isDeleted)))).getSingleResult();
         } catch (Exception ex) {
             session.clear();
             session.close();

@@ -25,9 +25,6 @@ public class Places implements Serializable {
     @Column(name = "place_id")
     private Long placeId;
 
-    @Version
-    private Long version;
-
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

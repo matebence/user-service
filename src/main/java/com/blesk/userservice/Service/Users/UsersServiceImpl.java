@@ -6,10 +6,12 @@ import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.LockModeType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.WRITE)
     public Users createUser(Users users) {
         Users user = this.usersDAO.save(users);
         if (user == null)
@@ -35,6 +38,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.WRITE)
     public Boolean deleteUser(Long userId, boolean su) {
         if (su) {
             Users users = this.usersDAO.get(Users.class, userId);
@@ -53,6 +57,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.WRITE)
     public Boolean updateUser(Users users) {
         if (!this.usersDAO.update(users))
             throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.NOT_FOUND);
@@ -61,16 +66,18 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Transactional
-    public Users getUser(Long userId, boolean su) {
+    @Lock(value = LockModeType.READ)
+    public Users getUser(Long accountId, boolean su) {
         if (su) {
-            return this.usersDAO.get(Users.class, userId);
+            return this.usersDAO.get(Users.class, accountId);
         } else {
-            return this.usersDAO.get(userId, false);
+            return this.usersDAO.get(accountId, false);
         }
     }
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public Users findUserByFirstName(String firstName, boolean isDeleted) {
         Users users = this.usersDAO.getItemByColumn("firstName", firstName, isDeleted);
         if (users == null)
@@ -81,6 +88,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public Users findUserByLastName(String lastName, boolean isDeleted) {
         Users users = this.usersDAO.getItemByColumn("lastName", lastName, isDeleted);
         if (users == null)
@@ -91,6 +99,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public List<Users> getAllUsers(int pageNumber, int pageSize, boolean su) {
         if (su) {
             return this.usersDAO.getAll(Users.class, pageNumber, pageSize);
@@ -101,6 +110,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Transactional
+    @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criteria, boolean su) {
         if (su) {
             return this.usersDAO.searchBy(Users.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));

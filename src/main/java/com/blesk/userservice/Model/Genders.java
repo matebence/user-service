@@ -23,9 +23,6 @@ public class Genders implements Serializable {
     @Column(name = "gender_id")
     private Long genderId;
 
-    @Version
-    private Long version;
-
     @NotNull(message = Messages.GENDERS_NAME_NOT_NULL)
     @Size(min = 5, max = 20, message = Messages.GENDERS_NAME_SIZE)
     @Column(name = "name", nullable = false)

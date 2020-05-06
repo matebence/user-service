@@ -14,7 +14,7 @@ public interface UsersService {
 
     Boolean updateUser(Users users);
 
-    Users getUser(Long userId, boolean su);
+    Users getUser(Long accountId, boolean su);
 
     Users findUserByFirstName(String firstName, boolean isDeleted);
 
