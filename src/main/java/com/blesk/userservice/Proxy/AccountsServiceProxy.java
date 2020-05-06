@@ -13,23 +13,23 @@ import java.util.HashMap;
 import java.util.List;
 
 @Repository
-@FeignClient(name = "account-service")
+@FeignClient(name = "gateway-server")
 @RibbonClient(name = "account-service")
 public interface AccountsServiceProxy {
 
-    @GetMapping("/accounts/{accountId}")
+    @GetMapping("account-service/api/accounts/{accountId}")
     @Headers("Content-Type: application/json")
     EntityModel<Users> retrieveAccounts(@PathVariable("accountId") long accountId);
 
-    @GetMapping("/accounts/page/{pageNumber}/limit/{pageSize}")
+    @GetMapping("account-service/api/accounts/page/{pageNumber}/limit/{pageSize}")
     @Headers("Content-Type: application/json")
     CollectionModel<Users> retrieveAllAccounts(@PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize);
 
-    @PostMapping("/accounts/join/{columName}")
+    @PostMapping("account-service/api/accounts/join/{columName}")
     @Headers("Content-Type: application/json")
     CollectionModel<Users> joinAccounts(@PathVariable("columName") String columName, @RequestBody List<Long> ids);
 
-    @PostMapping("/accounts/search")
+    @PostMapping("account-service/api/accounts/search")
     @Headers("Content-Type: application/json")
     CollectionModel<Users> searchForAccounts(@RequestBody HashMap<String, HashMap<String, String>> search);
 }
