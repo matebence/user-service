@@ -137,7 +137,7 @@ public class GendersResource {
         }
 
         List<Genders> genders = this.gendersService.getAllGenders(pageNumber, pageSize);
-        if (genders.isEmpty()) {
+        if (genders == null || genders.isEmpty()) {
             throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.BAD_REQUEST);
         }
 

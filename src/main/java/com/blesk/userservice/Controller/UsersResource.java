@@ -156,7 +156,7 @@ public class UsersResource {
         }
 
         List<Users> users = this.usersService.getAllUsers(pageNumber, pageSize, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
-        if (users.isEmpty()) {
+        if (users == null || users.isEmpty()) {
             throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.BAD_REQUEST);
         }
 

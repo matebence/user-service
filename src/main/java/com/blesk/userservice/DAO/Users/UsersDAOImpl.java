@@ -7,7 +7,6 @@ import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.*;
@@ -52,7 +51,7 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
 
         try {
             return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get("userId"), id), criteriaBuilder.equal(root.get("isDeleted"), isDeleted)))).getSingleResult();
-        } catch (NoResultException ex) {
+        } catch (Exception ex) {
             session.clear();
             session.close();
             return null;
@@ -86,7 +85,7 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
 
             try {
                 return typedQuery.getResultList();
-            } catch (NoResultException ex) {
+            } catch (Exception ex) {
                 session.clear();
                 session.close();
                 return null;
@@ -105,7 +104,7 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
 
         try {
             return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get(column), value), criteriaBuilder.equal(root.get("isDeleted"), isDeleted)))).getSingleResult();
-        } catch (NoResultException ex) {
+        } catch (Exception ex) {
             session.clear();
             session.close();
             return null;
@@ -180,7 +179,7 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
             HashMap<String, Object> map = new HashMap<>();
             map.put("results", typedQuery.getResultList());
             return map;
-        } catch (NoResultException ex) {
+        } catch (Exception ex) {
             session.clear();
             session.close();
             return null;

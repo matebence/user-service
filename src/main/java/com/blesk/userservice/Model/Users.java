@@ -27,6 +27,9 @@ public class Users implements Serializable {
     @Column(name = "user_id")
     private Long userId;
 
+    @Version
+    private Long version;
+
     @Transient
     @JsonProperty
     private String userName;
