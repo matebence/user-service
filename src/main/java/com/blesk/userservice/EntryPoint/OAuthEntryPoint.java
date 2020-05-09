@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 
 public class OAuthEntryPoint implements AuthenticationEntryPoint {
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws ServletException {
         Response errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), Messages.AUTH_EXCEPTION,true);

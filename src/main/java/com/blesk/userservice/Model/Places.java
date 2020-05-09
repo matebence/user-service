@@ -2,6 +2,7 @@ package com.blesk.userservice.Model;
 
 import com.blesk.userservice.Value.Messages;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -26,6 +27,7 @@ public class Places implements Serializable {
     private Long placeId;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Users users;
