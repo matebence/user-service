@@ -2,7 +2,7 @@ package com.blesk.userservice.Controller;
 
 import com.blesk.userservice.DTO.JwtMapper;
 import com.blesk.userservice.Exception.UserServiceException;
-import com.blesk.userservice.Model.Users;
+import com.blesk.userservice.Model.MySQL.Users;
 import com.blesk.userservice.Proxy.AccountsServiceProxy;
 import com.blesk.userservice.Service.Users.UsersServiceImpl;
 import com.blesk.userservice.Value.Keys;

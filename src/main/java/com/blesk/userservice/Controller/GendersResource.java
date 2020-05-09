@@ -2,7 +2,7 @@ package com.blesk.userservice.Controller;
 
 import com.blesk.userservice.DTO.JwtMapper;
 import com.blesk.userservice.Exception.UserServiceException;
-import com.blesk.userservice.Model.Genders;
+import com.blesk.userservice.Model.MySQL.Genders;
 import com.blesk.userservice.Service.Genders.GendersServiceImpl;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;

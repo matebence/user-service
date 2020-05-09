@@ -1,6 +1,6 @@
 package com.blesk.userservice.Repository.Users;
 
-import com.blesk.userservice.Model.Users;
+import com.blesk.userservice.Model.Redis.Users;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

@@ -2,7 +2,7 @@ package com.blesk.userservice.Service.Users;
 
 import com.blesk.userservice.DAO.Users.UsersDAOImpl;
 import com.blesk.userservice.Exception.UserServiceException;
-import com.blesk.userservice.Model.Users;
+import com.blesk.userservice.Model.MySQL.Users;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;

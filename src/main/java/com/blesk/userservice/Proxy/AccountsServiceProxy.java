@@ -1,20 +1,22 @@
 package com.blesk.userservice.Proxy;
 
-import com.blesk.userservice.Model.Users;
+import com.blesk.userservice.Model.MySQL.Users;
 import feign.Headers;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.HashMap;
 import java.util.List;
 
 @Repository
-@FeignClient(name = "gateway-server")
 @RibbonClient(name = "account-service")
+@FeignClient(name = "gateway-server", fallback = AccountsServiceProxyFallback.class)
 public interface AccountsServiceProxy {
 
     @GetMapping("account-service/api/accounts/{accountId}")
@@ -29,7 +31,32 @@ public interface AccountsServiceProxy {
     @Headers("Content-Type: application/json")
     CollectionModel<Users> joinAccounts(@PathVariable("columName") String columName, @RequestBody List<Long> ids);
 
-    @PostMapping("account-service/api/accounts/search")
+    @PostMapping("account-ssservice/api/accounts/search")
     @Headers("Content-Type: application/json")
     CollectionModel<Users> searchForAccounts(@RequestBody HashMap<String, HashMap<String, String>> search);
+}
+
+@Component
+class AccountsServiceProxyFallback implements AccountsServiceProxy {
+
+    @Override
+    public EntityModel<Users> retrieveAccounts(long accountId) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public CollectionModel<Users> retrieveAllAccounts(int pageNumber, int pageSize) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public CollectionModel<Users> joinAccounts(String columName, List<Long> ids) {
+        System.out.println("here");
+        return null;
+    }
+
+    @Override
+    public CollectionModel<Users> searchForAccounts(HashMap<String, HashMap<String, String>> search) {
+        throw new NotImplementedException();
+    }
 }

@@ -1,4 +1,4 @@
-package com.blesk.userservice.Model;
+package com.blesk.userservice.Model.MySQL;
 
 import com.blesk.userservice.Validator.Contains;
 import com.blesk.userservice.Value.Messages;

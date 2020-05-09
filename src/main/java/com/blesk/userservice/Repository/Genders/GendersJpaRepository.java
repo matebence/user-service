@@ -1,6 +1,6 @@
 package com.blesk.userservice.Repository.Genders;
 
-import com.blesk.userservice.Model.Genders;
+import com.blesk.userservice.Model.Redis.Genders;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

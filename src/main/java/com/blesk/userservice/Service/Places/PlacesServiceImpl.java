@@ -2,7 +2,7 @@ package com.blesk.userservice.Service.Places;
 
 import com.blesk.userservice.DAO.Places.PlacesDAOImpl;
 import com.blesk.userservice.Exception.UserServiceException;
-import com.blesk.userservice.Model.Places;
+import com.blesk.userservice.Model.MySQL.Places;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;

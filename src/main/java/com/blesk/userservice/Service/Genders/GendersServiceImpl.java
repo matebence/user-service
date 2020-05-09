@@ -3,7 +3,7 @@ package com.blesk.userservice.Service.Genders;
 import com.blesk.userservice.DAO.Genders.GendersDAO;
 import com.blesk.userservice.DAO.Genders.GendersDAOImpl;
 import com.blesk.userservice.Exception.UserServiceException;
-import com.blesk.userservice.Model.Genders;
+import com.blesk.userservice.Model.MySQL.Genders;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;

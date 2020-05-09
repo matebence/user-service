@@ -1,7 +1,7 @@
 package com.blesk.userservice.DAO.Users;
 
 import com.blesk.userservice.DAO.DAOImpl;
-import com.blesk.userservice.Model.Users;
+import com.blesk.userservice.Model.MySQL.Users;
 import com.blesk.userservice.Value.Keys;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;

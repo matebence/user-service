@@ -2,6 +2,7 @@ package com.blesk.userservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -14,6 +15,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableResourceServer
 @EnableDiscoveryClient
 @SpringBootApplication
+@EnableCircuitBreaker
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class UserServiceApplication {
