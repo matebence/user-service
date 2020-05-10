@@ -3,13 +3,13 @@ package com.blesk.userservice.Service.Genders;
 import com.blesk.userservice.DAO.Genders.GendersDAO;
 import com.blesk.userservice.DAO.Genders.GendersDAOImpl;
 import com.blesk.userservice.Exception.UserServiceException;
-import com.blesk.userservice.Model.MySQL.Genders;
+import com.blesk.userservice.Model.Genders;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Service
 public class GendersServiceImpl implements GendersService {
 
     private GendersDAOImpl gendersDAO;

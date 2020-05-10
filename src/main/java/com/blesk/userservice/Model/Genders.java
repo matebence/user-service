@@ -1,4 +1,4 @@
-package com.blesk.userservice.Model.MySQL;
+package com.blesk.userservice.Model;
 
 import com.blesk.userservice.Value.Messages;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;

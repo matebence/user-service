@@ -1,7 +1,7 @@
 package com.blesk.userservice.DAO.Users;
 
 import com.blesk.userservice.DAO.DAO;
-import com.blesk.userservice.Model.MySQL.Users;
+import com.blesk.userservice.Model.Users;
 
 import java.util.HashMap;
 import java.util.List;

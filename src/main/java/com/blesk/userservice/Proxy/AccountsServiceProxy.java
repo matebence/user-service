@@ -1,6 +1,6 @@
 package com.blesk.userservice.Proxy;
 
-import com.blesk.userservice.Model.MySQL.Users;
+import com.blesk.userservice.Model.Users;
 import feign.Headers;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -27,7 +27,7 @@ public interface AccountsServiceProxy {
     @Headers("Content-Type: application/json")
     CollectionModel<Users> retrieveAllAccounts(@PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize);
 
-    @PostMapping("account-service/api/accounts/join/{columName}")
+    @PostMapping("account-servicess/api/accounts/join/{columName}")
     @Headers("Content-Type: application/json")
     CollectionModel<Users> joinAccounts(@PathVariable("columName") String columName, @RequestBody List<Long> ids);
 
@@ -51,8 +51,7 @@ class AccountsServiceProxyFallback implements AccountsServiceProxy {
 
     @Override
     public CollectionModel<Users> joinAccounts(String columName, List<Long> ids) {
-        System.out.println("here");
-        return null;
+        throw new NotImplementedException();
     }
 
     @Override

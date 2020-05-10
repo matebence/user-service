@@ -1,4 +1,4 @@
-package com.blesk.userservice.Model.MySQL;
+package com.blesk.userservice.Model;
 
 import com.blesk.userservice.Validator.Contains;
 import com.blesk.userservice.Value.Messages;
@@ -105,34 +105,6 @@ public class Users implements Serializable {
         this.balance = balance;
         this.tel = tel;
         this.img = img;
-    }
-
-    public Users(String firstName, String lastName, String gender, Double balance, String tel, String img) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.balance = balance;
-        this.tel = tel;
-        this.img = img;
-    }
-
-    public Users(String userName, String email, Long accountId) {
-        this.userName = userName;
-        this.email = email;
-        this.accountId = accountId;
-    }
-
-    public Users(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public Users(Double balance) {
-        this.balance = balance;
-    }
-
-    public Users(Places places) {
-        this.places = places;
     }
 
     public Users() {

@@ -2,13 +2,13 @@ package com.blesk.userservice.Service.Users;
 
 import com.blesk.userservice.DAO.Users.UsersDAOImpl;
 import com.blesk.userservice.Exception.UserServiceException;
-import com.blesk.userservice.Model.MySQL.Users;
+import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Service
 public class UsersServiceImpl implements UsersService {
 
     private UsersDAOImpl usersDAO;

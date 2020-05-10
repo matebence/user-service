@@ -1,6 +1,6 @@
 package com.blesk.userservice.Service.Places;
 
-import com.blesk.userservice.Model.MySQL.Places;
+import com.blesk.userservice.Model.Places;
 
 import java.util.HashMap;
 import java.util.List;

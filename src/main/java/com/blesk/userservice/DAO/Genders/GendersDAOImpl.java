@@ -1,7 +1,7 @@
 package com.blesk.userservice.DAO.Genders;
 
 import com.blesk.userservice.DAO.DAOImpl;
-import com.blesk.userservice.Model.MySQL.Genders;
+import com.blesk.userservice.Model.Genders;
 import org.springframework.stereotype.Repository;
 
 @Repository

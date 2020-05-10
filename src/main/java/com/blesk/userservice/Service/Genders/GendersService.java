@@ -1,6 +1,6 @@
 package com.blesk.userservice.Service.Genders;
 
-import com.blesk.userservice.Model.MySQL.Genders;
+import com.blesk.userservice.Model.Genders;
 
 import java.util.HashMap;
 import java.util.List;

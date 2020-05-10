@@ -1,4 +1,4 @@
-package com.blesk.userservice.Model.MySQL;
+package com.blesk.userservice.Model;
 
 import com.blesk.userservice.Value.Messages;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -83,10 +83,6 @@ public class Places implements Serializable {
         this.street = street;
         this.zip = zip;
         this.code = code;
-    }
-
-    public Places(Users users) {
-        this.users = users;
     }
 
     public Places() {

@@ -1,7 +1,7 @@
 package com.blesk.userservice.DAO.Places;
 
 import com.blesk.userservice.DAO.DAOImpl;
-import com.blesk.userservice.Model.MySQL.Places;
+import com.blesk.userservice.Model.Places;
 import org.springframework.stereotype.Repository;
 
 @Repository
