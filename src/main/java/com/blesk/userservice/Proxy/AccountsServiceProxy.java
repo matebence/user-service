@@ -27,11 +27,11 @@ public interface AccountsServiceProxy {
     @Headers("Content-Type: application/json")
     CollectionModel<Users> retrieveAllAccounts(@PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize);
 
-    @PostMapping("account-servicess/api/accounts/join/{columName}")
+    @PostMapping("account-service/api/accounts/join/{columName}")
     @Headers("Content-Type: application/json")
     CollectionModel<Users> joinAccounts(@PathVariable("columName") String columName, @RequestBody List<Long> ids);
 
-    @PostMapping("account-ssservice/api/accounts/search")
+    @PostMapping("account-service/api/accounts/search")
     @Headers("Content-Type: application/json")
     CollectionModel<Users> searchForAccounts(@RequestBody HashMap<String, HashMap<String, String>> search);
 }

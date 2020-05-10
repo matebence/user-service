@@ -47,13 +47,6 @@ public class Messages {
 
 
 
-    public static final String CONTAINS_VALIDATOR_DEFAULT = "Tento údaj neeviduje v databáze";
-    public static final String PAGINATION_ERROR = "Požiadavku sa nepodarilo spracovať, chyba stránkovania";
-    public static final String SEARCH_ERROR = "Kritériám nevyhoveli žiadné záznamy";
-    public static final String UNIQUE_FIELD_DEFAULT = "Obsah pola nie je jedinečné";
-
-
-
     public static final String CREATE_GENDER = "Nový názov pohlavia sa nepodarilo vytvoriť";
     public static final String DELETE_GENDER = "Odstránenie názov pohlavia sa nepodarilo";
     public static final String UPDATE_GENDER = "Aktualizovanie názov pohlavia sa nepodarilo";
@@ -72,9 +65,21 @@ public class Messages {
     public static final String GET_USER = "Ľutujeme, ale profil neexistuje";
     public static final String GET_ALL_USERS = "Nenašiel sa žiadný profil";
 
+    public static final String CREATE_CACHE = "Nepodarilo sa vytvoriť/aktualizovať cache pre Model Users";
+    public static final String DELETE_CACHE = "Nepodarilo sa odstrániť cache pre Model Users";
+    public static final String FIND_CACHE = "Názov pohlavia uz existuje";
+    public static final String NOT_FOUND_CACHE = "Názov pohlavia uz existuje";
+
 
 
     public static final String USER_ACCOUNT_ID_UNIQUE = "Identifikačné číslo používateľského konta už existuje";
     public static final String USER_TEL_UNIQUE = "Telefóne číslo už existuje";
     public static final String GENDER_NAME_UNIQUE = "Názov pohlavia uz existuje";
+
+
+
+    public static final String CONTAINS_VALIDATOR_DEFAULT = "Tento údaj neeviduje v databáze";
+    public static final String PAGINATION_ERROR = "Požiadavku sa nepodarilo spracovať, chyba stránkovania";
+    public static final String SEARCH_ERROR = "Kritériám nevyhoveli žiadné záznamy";
+    public static final String UNIQUE_FIELD_DEFAULT = "Obsah pola nie je jedinečné";
 }

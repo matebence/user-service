@@ -2,8 +2,10 @@ package com.blesk.userservice.Controller;
 
 import com.blesk.userservice.DTO.JwtMapper;
 import com.blesk.userservice.Exception.UserServiceException;
+import com.blesk.userservice.Model.Caches;
 import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Proxy.AccountsServiceProxy;
+import com.blesk.userservice.Service.Caches.CachesServiceImpl;
 import com.blesk.userservice.Service.Users.UsersServiceImpl;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
@@ -16,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,11 +37,13 @@ public class UsersResource {
     private final static int DEFAULT_NUMBER = 0;
 
     private UsersServiceImpl usersService;
+    private CachesServiceImpl cachesService;
     private AccountsServiceProxy accountsServiceProxy;
 
     @Autowired
-    public UsersResource(UsersServiceImpl usersService, AccountsServiceProxy accountsServiceProxy) {
+    public UsersResource(UsersServiceImpl usersService, CachesServiceImpl cachesService, AccountsServiceProxy accountsServiceProxy) {
         this.usersService = usersService;
+        this.cachesService = cachesService;
         this.accountsServiceProxy = accountsServiceProxy;
     }
 
@@ -129,8 +134,21 @@ public class UsersResource {
             throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
         }
 
-        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Arrays.asList(new Long[]{accountId}));
-        users = this.performJoin(Arrays.asList(new Users[]{users}), accountDetails).get(0);
+        try {
+            CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Arrays.asList(new Long[]{accountId}));
+            List<Caches> caches = new ArrayList<>();
+
+            accountDetails.getContent().forEach(user -> {
+                Caches cache = new Caches();
+                cache.setAccountId(user.getAccountId());
+                cache.setEmail(user.getEmail());
+                cache.setUserName(user.getUserName());
+                caches.add(cache);
+            });
+
+            this.cachesService.createOrUpdatCache(caches);
+            users = this.performJoin(Arrays.asList(new Users[]{users}), accountDetails).get(0);
+        } catch (ResourceAccessException ignore){}
 
         EntityModel<Users> entityModel = new EntityModel<Users>(users);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveUsers(accountId, httpServletRequest, httpServletResponse)).withSelfRel());
@@ -198,7 +216,7 @@ public class UsersResource {
         return collectionModel;
     }
 
-    private List<Users> performJoin(List<Users> users, CollectionModel<Users> accountDetails){
+    private List<Users> performJoin(List<Users> users, CollectionModel<Users> accountDetails) {
         if (accountDetails != null && accountDetails.getContent().size() == users.size()) {
             Iterator<Users> usersIterator = users.iterator();
             Iterator<Users> accountDetailsIterator = accountDetails.iterator();
@@ -210,7 +228,7 @@ public class UsersResource {
                 usersIteratorValue.setEmail(accountDetailsIteratorValue.getEmail());
             }
             return users;
-        }else{
+        } else {
             return Collections.emptyList();
         }
     }
