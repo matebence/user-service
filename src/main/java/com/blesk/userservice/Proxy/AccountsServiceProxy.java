@@ -1,22 +1,27 @@
 package com.blesk.userservice.Proxy;
 
+import com.blesk.userservice.Exception.UserServiceException;
+import com.blesk.userservice.Model.Caches;
 import com.blesk.userservice.Model.Users;
+import com.blesk.userservice.Service.Caches.CachesServiceImpl;
+import com.blesk.userservice.Value.Messages;
 import feign.Headers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Repository
-//@RibbonClient(name = "account-service")
-@FeignClient(name = "gateway-server", url = "192.168.99.100:8765")
+@FeignClient(name = "gateway-server")
+@RibbonClient(name = "account-service")
 public interface AccountsServiceProxy {
 
     @GetMapping("account-service/api/accounts/{accountId}")
@@ -35,27 +40,41 @@ public interface AccountsServiceProxy {
     @Headers("Content-Type: application/json")
     CollectionModel<Users> searchForAccounts(@RequestBody HashMap<String, HashMap<String, String>> search);
 }
-//
-//@Component
-//class AccountsServiceProxyFallback implements AccountsServiceProxy {
-//
-//    @Override
-//    public EntityModel<Users> retrieveAccounts(long accountId) {
-//        throw new NotImplementedException();
-//    }
-//
-//    @Override
-//    public CollectionModel<Users> retrieveAllAccounts(int pageNumber, int pageSize) {
-//        throw new NotImplementedException();
-//    }
-//
-//    @Override
-//    public CollectionModel<Users> joinAccounts(String columName, List<Long> ids) {
-//        throw new NotImplementedException();
-//    }
-//
-//    @Override
-//    public CollectionModel<Users> searchForAccounts(HashMap<String, HashMap<String, String>> search) {
-//        throw new NotImplementedException();
-//    }
-//}
+
+@Component
+class AccountsServiceProxyFallback implements AccountsServiceProxy {
+
+    private CachesServiceImpl cachesService;
+
+    @Autowired
+    public AccountsServiceProxyFallback(CachesServiceImpl cachesService) {
+        this.cachesService = cachesService;
+    }
+
+    @Override
+    public CollectionModel<Users> joinAccounts(String columName, List<Long> ids) {
+        Iterable<Caches> caches = this.cachesService.getAllCache(ids);
+        List<Users> users = new ArrayList<>();
+        caches.forEach(cache -> {
+            users.add(new Users(true, cache.getAccountId(), cache.getUserName(), cache.getEmail()));
+        });
+
+        if (users.isEmpty()) throw new UserServiceException(Messages.SERVER_EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new CollectionModel<Users>(users);
+    }
+
+    @Override
+    public EntityModel<Users> retrieveAccounts(long accountId) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public CollectionModel<Users> retrieveAllAccounts(int pageNumber, int pageSize) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public CollectionModel<Users> searchForAccounts(HashMap<String, HashMap<String, String>> search) {
+        throw new NotImplementedException();
+    }
+}

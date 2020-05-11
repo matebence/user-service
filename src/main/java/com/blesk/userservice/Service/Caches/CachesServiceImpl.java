@@ -51,9 +51,7 @@ public class CachesServiceImpl implements CachesService {
     public Iterable<Caches> getAllCache(Iterable<Long> ids) {
         try {
             Iterable<Caches> caches = this.cachesCrudRepository.findAllById(ids);
-            if (caches == null){
-                this.logger.info(Messages.NOT_FOUND_CACHE);
-            }
+            if (caches == null) this.logger.info(Messages.NOT_FOUND_CACHE);
             return caches;
         }catch (DataAccessException ex){
             this.logger.info(Messages.FIND_CACHE);
@@ -67,9 +65,7 @@ public class CachesServiceImpl implements CachesService {
     public Caches getCache(Long id) {
         try {
             Optional optional = this.cachesCrudRepository.findById(id);
-            if (!optional.isPresent()){
-                this.logger.info(Messages.NOT_FOUND_CACHE);
-            }
+            if (!optional.isPresent()) this.logger.info(Messages.NOT_FOUND_CACHE);
             return (Caches) optional.get();
         } catch (DataAccessException ex) {
             this.logger.info(Messages.FIND_CACHE);

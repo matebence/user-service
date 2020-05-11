@@ -18,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResourceAccessException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,18 +51,13 @@ public class UsersResource {
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Users> createUsers(@Valid @RequestBody Users users, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_USERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Users user = this.usersService.createUser(users);
-        if (user == null) {
-            throw new UserServiceException(Messages.CREATE_USER, HttpStatus.BAD_REQUEST);
-        }
+        if (user == null) throw new UserServiceException(Messages.CREATE_USER, HttpStatus.BAD_REQUEST);
 
         EntityModel<Users> entityModel = new EntityModel<Users>(user);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveUsers(user.getUserId(), httpServletRequest, httpServletResponse)).withRel("user"));
-
         return entityModel;
     }
 
@@ -72,9 +66,7 @@ public class UsersResource {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteUsers(@PathVariable long userId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_USERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Boolean result;
         try {
@@ -83,11 +75,7 @@ public class UsersResource {
             ex.setHttpStatus(HttpStatus.BAD_REQUEST);
             throw ex;
         }
-
-        if (!result) {
-            throw new UserServiceException(Messages.DELETE_USER, HttpStatus.BAD_REQUEST);
-        }
-
+        if (!result) throw new UserServiceException(Messages.DELETE_USER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -96,14 +84,10 @@ public class UsersResource {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateUsers(@Valid @RequestBody Users users, @PathVariable long userId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_USERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Users user = this.usersService.getUser(userId, false);
-        if (user == null) {
-            throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
-        }
+        if (user == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
 
         user.setFirstName(users.getFirstName());
         user.setLastName(users.getLastName());
@@ -113,10 +97,7 @@ public class UsersResource {
         user.setImg(users.getImg());
         user.setPlaces(users.getPlaces());
 
-        if (!this.usersService.updateUser(user)) {
-            throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.BAD_REQUEST);
-        }
-
+        if (!this.usersService.updateUser(user)) throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -125,35 +106,18 @@ public class UsersResource {
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Users> retrieveUsers(@PathVariable long accountId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_USERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Users users = this.usersService.getUser(accountId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
-        if (users == null) {
-            throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
-        }
+        if (users == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
 
-//        try {
-            CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Arrays.asList(new Long[]{accountId}));
-//            List<Caches> caches = new ArrayList<>();
-//
-//            accountDetails.getContent().forEach(user -> {
-//                Caches cache = new Caches();
-//                cache.setAccountId(user.getAccountId());
-//                cache.setEmail(user.getEmail());
-//                cache.setUserName(user.getUserName());
-//                caches.add(cache);
-//            });
-
-//            this.cachesService.createOrUpdatCache(caches);
-            users = this.performJoin(Arrays.asList(new Users[]{users}), accountDetails).get(0);
-//        } catch (ResourceAccessException ignore){}
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Arrays.asList(new Long[]{accountId}));
+        this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
+        users = this.performJoin(Arrays.asList(new Users[]{users}), accountDetails).iterator().next();
 
         EntityModel<Users> entityModel = new EntityModel<Users>(users);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveUsers(accountId, httpServletRequest, httpServletResponse)).withSelfRel());
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveAllUsers(UsersResource.DEFAULT_NUMBER, UsersResource.DEFAULT_PAGE_SIZE, httpServletRequest, httpServletResponse)).withRel("all-users"));
-
         return entityModel;
     }
 
@@ -162,22 +126,19 @@ public class UsersResource {
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Users>> retrieveAllUsers(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_USERS")) {
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_USERS"))
             throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
 
         List<Users> users = this.usersService.getAllUsers(pageNumber, pageSize, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
-        if (users == null || users.isEmpty()) {
-            throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.BAD_REQUEST);
-        }
+        if (users == null || users.isEmpty()) throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.BAD_REQUEST);
 
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", users.stream().map(Users::getAccountId).collect(Collectors.toList()));
+        this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         users = this.performJoin(users, accountDetails);
 
         CollectionModel<List<Users>> collectionModel = new CollectionModel(users);
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllUsers(pageNumber, pageSize, httpServletRequest, httpServletResponse)).withSelfRel());
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllUsers(++pageNumber, pageSize, httpServletRequest, httpServletResponse)).withRel("next-range"));
-
         return collectionModel;
     }
 
@@ -186,33 +147,23 @@ public class UsersResource {
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<List<Users>> searchForUsers(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_USERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
 
-        if (search.get(Keys.PAGINATION) == null) {
-            throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (search.get(Keys.PAGINATION) == null) throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
 
         Map<String, Object> users = this.usersService.searchForUser(search, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
-        if (users == null || users.isEmpty()) {
-            throw new UserServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
-        }
+        if (users == null || users.isEmpty()) throw new UserServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
         List<Users> user = (List<Users>) users.get("results");
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", user.stream().map(Users::getAccountId).collect(Collectors.toList()));
+        this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         user = this.performJoin(user, accountDetails);
 
         CollectionModel<List<Users>> collectionModel = new CollectionModel(user);
         collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withSelfRel());
 
-        if ((boolean) users.get("hasPrev")) {
-            collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
-        }
-        if ((boolean) users.get("hasNext")) {
-            collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
-        }
-
+        if ((boolean) users.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
+        if ((boolean) users.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
     }
 
@@ -231,5 +182,19 @@ public class UsersResource {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    private List<Caches> performCaching(CollectionModel<Users> accountDetails){
+        List<Caches> caches = new ArrayList<>();
+        for (Users user : accountDetails.getContent()) {
+            if (user.getCached()) break;
+
+            Caches cache = new Caches();
+            cache.setAccountId(user.getAccountId());
+            cache.setEmail(user.getEmail());
+            cache.setUserName(user.getUserName());
+            caches.add(cache);
+        }
+        return caches;
     }
 }

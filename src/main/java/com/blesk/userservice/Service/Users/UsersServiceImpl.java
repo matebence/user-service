@@ -31,8 +31,7 @@ public class UsersServiceImpl implements UsersService {
     @Lock(value = LockModeType.WRITE)
     public Users createUser(Users users) {
         Users user = this.usersDAO.save(users);
-        if (user == null)
-            throw new UserServiceException(Messages.CREATE_USER, HttpStatus.NOT_FOUND);
+        if (user == null) throw new UserServiceException(Messages.CREATE_USER, HttpStatus.NOT_FOUND);
         return user;
     }
 
@@ -42,15 +41,12 @@ public class UsersServiceImpl implements UsersService {
     public Boolean deleteUser(Long userId, boolean su) {
         if (su) {
             Users users = this.usersDAO.get(Users.class, userId);
-            if (users == null)
-                throw new UserServiceException(Messages.GET_USER, HttpStatus.NOT_FOUND);
-            if (!this.usersDAO.delete("users", "user_id", userId))
-                throw new UserServiceException(Messages.DELETE_USER, HttpStatus.NOT_FOUND);
+            if (users == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.NOT_FOUND);
+            if (!this.usersDAO.delete("users", "user_id", userId)) throw new UserServiceException(Messages.DELETE_USER, HttpStatus.NOT_FOUND);
             return true;
         } else {
             Users users = this.usersDAO.get(userId, false);
-            if (users == null)
-                throw new UserServiceException(Messages.GET_USER, HttpStatus.NOT_FOUND);
+            if (users == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.NOT_FOUND);
             return this.usersDAO.softDelete(users);
         }
     }
@@ -59,8 +55,7 @@ public class UsersServiceImpl implements UsersService {
     @Transactional
     @Lock(value = LockModeType.WRITE)
     public Boolean updateUser(Users users) {
-        if (!this.usersDAO.update(users))
-            throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.NOT_FOUND);
+        if (!this.usersDAO.update(users)) throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.NOT_FOUND);
         return true;
     }
 
@@ -80,9 +75,7 @@ public class UsersServiceImpl implements UsersService {
     @Lock(value = LockModeType.READ)
     public Users findUserByFirstName(String firstName, boolean isDeleted) {
         Users users = this.usersDAO.getItemByColumn("firstName", firstName, isDeleted);
-        if (users == null)
-            throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.NOT_FOUND);
-
+        if (users == null) throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.NOT_FOUND);
         return users;
     }
 
@@ -91,9 +84,7 @@ public class UsersServiceImpl implements UsersService {
     @Lock(value = LockModeType.READ)
     public Users findUserByLastName(String lastName, boolean isDeleted) {
         Users users = this.usersDAO.getItemByColumn("lastName", lastName, isDeleted);
-        if (users == null)
-            throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.NOT_FOUND);
-
+        if (users == null) throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.NOT_FOUND);
         return users;
     }
 

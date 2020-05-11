@@ -85,6 +85,10 @@ public class Places implements Serializable {
         this.code = code;
     }
 
+    public Places(Users users) {
+        this.users = users;
+    }
+
     public Places() {
     }
 

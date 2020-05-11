@@ -28,6 +28,9 @@ public class Users implements Serializable {
     private Long userId;
 
     @Transient
+    private Boolean cached = false;
+
+    @Transient
     @JsonProperty
     private String userName;
 
@@ -86,9 +89,46 @@ public class Users implements Serializable {
     @Column(name = "deleted_at", updatable = false)
     private Timestamp deletedAt;
 
-    public Users(Places places, Long accountId, String firstName, String lastName, String gender, Double balance, String tel, String img) {
-        this.places = places;
+    public Users(Boolean cached, String userName, String email, Long accountId, Places places, String firstName, String lastName, String gender, Double balance, String tel, String img, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+        this.cached = cached;
+        this.userName = userName;
+        this.email = email;
         this.accountId = accountId;
+        this.places = places;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.balance = balance;
+        this.tel = tel;
+        this.img = img;
+        this.isDeleted = isDeleted;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
+    }
+
+    public Users(String userName, String email, Long accountId, Places places, String firstName, String lastName, String gender, Double balance, String tel, String img, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+        this.userName = userName;
+        this.email = email;
+        this.accountId = accountId;
+        this.places = places;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.balance = balance;
+        this.tel = tel;
+        this.img = img;
+        this.isDeleted = isDeleted;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
+    }
+
+    public Users(String userName, String email, Long accountId, Places places, String firstName, String lastName, String gender, Double balance, String tel, String img) {
+        this.userName = userName;
+        this.email = email;
+        this.accountId = accountId;
+        this.places = places;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -97,14 +137,11 @@ public class Users implements Serializable {
         this.img = img;
     }
 
-    public Users(Long accountId, String firstName, String lastName, String gender, Double balance, String tel, String img) {
+    public Users(Boolean cached, Long accountId, String userName, String email){
+        this.cached = cached;
         this.accountId = accountId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.balance = balance;
-        this.tel = tel;
-        this.img = img;
+        this.userName = userName;
+        this.email = email;
     }
 
     public Users() {
@@ -116,6 +153,14 @@ public class Users implements Serializable {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Boolean getCached() {
+        return this.cached;
+    }
+
+    public void setCached(Boolean cached) {
+        this.cached = cached;
     }
 
     public String getUserName() {

@@ -45,18 +45,13 @@ public class GendersResource {
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Genders> createGenders(@Valid @RequestBody Genders genders, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_GENDERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Genders gender = this.gendersService.createGender(genders);
-        if (gender == null) {
-            throw new UserServiceException(Messages.CREATE_GENDER, HttpStatus.BAD_REQUEST);
-        }
+        if (gender == null) throw new UserServiceException(Messages.CREATE_GENDER, HttpStatus.BAD_REQUEST);
 
         EntityModel<Genders> entityModel = new EntityModel<Genders>(gender);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveGenders(gender.getGenderId(), httpServletRequest, httpServletResponse)).withRel("gender"));
-
         return entityModel;
     }
 
@@ -65,9 +60,7 @@ public class GendersResource {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteGenders(@PathVariable long genderId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_GENDERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Boolean result;
         try {
@@ -76,11 +69,7 @@ public class GendersResource {
             ex.setHttpStatus(HttpStatus.BAD_REQUEST);
             throw ex;
         }
-
-        if (!result) {
-            throw new UserServiceException(Messages.DELETE_GENDER, HttpStatus.BAD_REQUEST);
-        }
-
+        if (!result) throw new UserServiceException(Messages.DELETE_GENDER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -89,20 +78,14 @@ public class GendersResource {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateGenders(@Valid @RequestBody Genders genders, @PathVariable long genderId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_GENDERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Genders gender = this.gendersService.getGender(genderId);
-        if (gender == null) {
-            throw new UserServiceException(Messages.GET_GENDER, HttpStatus.BAD_REQUEST);
-        }
+        if (gender == null) throw new UserServiceException(Messages.GET_GENDER, HttpStatus.BAD_REQUEST);
 
         gender.setName(genders.getName());
-        if (!this.gendersService.updateGender(gender)) {
-            throw new UserServiceException(Messages.UPDATE_GENDER, HttpStatus.BAD_REQUEST);
-        }
 
+        if (!this.gendersService.updateGender(gender)) throw new UserServiceException(Messages.UPDATE_GENDER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -111,19 +94,14 @@ public class GendersResource {
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Genders> retrieveGenders(@PathVariable long genderId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_GENDERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Genders genders = this.gendersService.getGender(genderId);
-        if (genders == null) {
-            throw new UserServiceException(Messages.GET_GENDER, HttpStatus.BAD_REQUEST);
-        }
+        if (genders == null) throw new UserServiceException(Messages.GET_GENDER, HttpStatus.BAD_REQUEST);
 
         EntityModel<Genders> entityModel = new EntityModel<Genders>(genders);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveGenders(genderId, httpServletRequest, httpServletResponse)).withSelfRel());
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveAllGenders(GendersResource.DEFAULT_NUMBER, GendersResource.DEFAULT_PAGE_SIZE, httpServletRequest, httpServletResponse)).withRel("all-genders"));
-
         return entityModel;
     }
 
@@ -132,19 +110,14 @@ public class GendersResource {
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Genders>> retrieveAllGenders(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_GENDERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         List<Genders> genders = this.gendersService.getAllGenders(pageNumber, pageSize);
-        if (genders == null || genders.isEmpty()) {
-            throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.BAD_REQUEST);
-        }
+        if (genders == null || genders.isEmpty()) throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.BAD_REQUEST);
 
         CollectionModel<List<Genders>> collectionModel = new CollectionModel(genders);
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllGenders(pageNumber, pageSize, httpServletRequest, httpServletResponse)).withSelfRel());
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllGenders(++pageNumber, pageSize, httpServletRequest, httpServletResponse)).withRel("next-range"));
-
         return collectionModel;
     }
 
@@ -153,29 +126,18 @@ public class GendersResource {
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<List<Genders>> searchForGenders(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_GENDERS")) {
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-        }
 
-        if (search.get(Keys.PAGINATION) == null) {
-            throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
-        }
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (search.get(Keys.PAGINATION) == null) throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
 
         Map<String, Object> genders = this.gendersService.searchForGender(search);
-        if (genders == null || genders.isEmpty()) {
-            throw new UserServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
-        }
+        if (genders == null || genders.isEmpty()) throw new UserServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
         CollectionModel<List<Genders>> collectionModel = new CollectionModel((List<Genders>) genders.get("results"));
         collectionModel.add(linkTo(methodOn(this.getClass()).searchForGenders(search, httpServletRequest, httpServletResponse)).withSelfRel());
 
-        if ((boolean) genders.get("hasPrev")) {
-            collectionModel.add(linkTo(methodOn(this.getClass()).searchForGenders(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
-        }
-        if ((boolean) genders.get("hasNext")) {
-            collectionModel.add(linkTo(methodOn(this.getClass()).searchForGenders(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
-        }
-
+        if ((boolean) genders.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForGenders(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
+        if ((boolean) genders.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForGenders(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
     }
 }

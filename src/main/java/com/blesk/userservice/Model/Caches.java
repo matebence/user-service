@@ -20,6 +20,11 @@ public class Caches implements Serializable {
         this.email = email;
     }
 
+    public Caches(String userName, String email) {
+        this.userName = userName;
+        this.email = email;
+    }
+
     public Caches() {
     }
 

@@ -32,8 +32,7 @@ public class GendersServiceImpl implements GendersService {
     @Lock(value = LockModeType.WRITE)
     public Genders createGender(Genders genders) {
         Genders gender = this.gendersDAO.save(genders);
-        if (gender == null)
-            throw new UserServiceException(Messages.CREATE_GENDER, HttpStatus.NOT_FOUND);
+        if (gender == null) throw new UserServiceException(Messages.CREATE_GENDER, HttpStatus.NOT_FOUND);
         return gender;
     }
 
@@ -42,10 +41,8 @@ public class GendersServiceImpl implements GendersService {
     @Lock(value = LockModeType.WRITE)
     public Boolean deleteGender(Long genderId) {
         Genders genders = this.gendersDAO.get(GendersDAO.class, genderId);
-        if (genders == null)
-            throw new UserServiceException(Messages.GET_GENDER, HttpStatus.NOT_FOUND);
-        if (!this.gendersDAO.delete("genders", "gender_id", genderId))
-            throw new UserServiceException(Messages.DELETE_GENDER, HttpStatus.NOT_FOUND);
+        if (genders == null) throw new UserServiceException(Messages.GET_GENDER, HttpStatus.NOT_FOUND);
+        if (!this.gendersDAO.delete("genders", "gender_id", genderId)) throw new UserServiceException(Messages.DELETE_GENDER, HttpStatus.NOT_FOUND);
         return true;
     }
 
@@ -53,8 +50,7 @@ public class GendersServiceImpl implements GendersService {
     @Transactional
     @Lock(value = LockModeType.WRITE)
     public Boolean updateGender(Genders genders) {
-        if (!this.gendersDAO.update(genders))
-            throw new UserServiceException(Messages.UPDATE_GENDER, HttpStatus.NOT_FOUND);
+        if (!this.gendersDAO.update(genders)) throw new UserServiceException(Messages.UPDATE_GENDER, HttpStatus.NOT_FOUND);
         return true;
     }
 
@@ -63,9 +59,7 @@ public class GendersServiceImpl implements GendersService {
     @Lock(value = LockModeType.READ)
     public Genders findGenderByName(String name) {
         Genders genders = this.gendersDAO.getItemByColumn(Genders.class, "name", name);
-        if (genders == null)
-            throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.NOT_FOUND);
-
+        if (genders == null) throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.NOT_FOUND);
         return genders;
     }
 
@@ -74,8 +68,7 @@ public class GendersServiceImpl implements GendersService {
     @Lock(value = LockModeType.READ)
     public List<Genders> getAllGenders(int pageNumber, int pageSize) {
         List<Genders> genders = this.gendersDAO.getAll(Genders.class, pageNumber, pageSize);
-        if (genders.isEmpty())
-            throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.NOT_FOUND);
+        if (genders.isEmpty()) throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.NOT_FOUND);
         return genders;
     }
 
@@ -83,14 +76,9 @@ public class GendersServiceImpl implements GendersService {
     @Transactional
     @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForGender(HashMap<String, HashMap<String, String>> criteria) {
-        if (criteria.get(Keys.PAGINATION) == null)
-            throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.NOT_FOUND);
-
+        if (criteria.get(Keys.PAGINATION) == null) throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.NOT_FOUND);
         Map<String, Object> genders = this.gendersDAO.searchBy(Genders.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
-
-        if (genders == null || genders.isEmpty())
-            throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.NOT_FOUND);
-
+        if (genders == null || genders.isEmpty()) throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.NOT_FOUND);
         return genders;
     }
 
@@ -99,8 +87,7 @@ public class GendersServiceImpl implements GendersService {
     @Lock(value = LockModeType.READ)
     public Genders getGender(Long genderId) {
         Genders gender = this.gendersDAO.get(Genders.class, genderId);
-        if (gender == null)
-            throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.NOT_FOUND);
+        if (gender == null) throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.NOT_FOUND);
         return gender;
     }
 }
