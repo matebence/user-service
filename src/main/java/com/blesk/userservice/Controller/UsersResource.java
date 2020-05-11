@@ -134,21 +134,21 @@ public class UsersResource {
             throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
         }
 
-        try {
+//        try {
             CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Arrays.asList(new Long[]{accountId}));
-            List<Caches> caches = new ArrayList<>();
+//            List<Caches> caches = new ArrayList<>();
+//
+//            accountDetails.getContent().forEach(user -> {
+//                Caches cache = new Caches();
+//                cache.setAccountId(user.getAccountId());
+//                cache.setEmail(user.getEmail());
+//                cache.setUserName(user.getUserName());
+//                caches.add(cache);
+//            });
 
-            accountDetails.getContent().forEach(user -> {
-                Caches cache = new Caches();
-                cache.setAccountId(user.getAccountId());
-                cache.setEmail(user.getEmail());
-                cache.setUserName(user.getUserName());
-                caches.add(cache);
-            });
-
-            this.cachesService.createOrUpdatCache(caches);
+//            this.cachesService.createOrUpdatCache(caches);
             users = this.performJoin(Arrays.asList(new Users[]{users}), accountDetails).get(0);
-        } catch (ResourceAccessException ignore){}
+//        } catch (ResourceAccessException ignore){}
 
         EntityModel<Users> entityModel = new EntityModel<Users>(users);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveUsers(accountId, httpServletRequest, httpServletResponse)).withSelfRel());

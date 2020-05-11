@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 
 @Repository
-@RibbonClient(name = "account-service")
-@FeignClient(name = "gateway-server", fallback = AccountsServiceProxyFallback.class)
+//@RibbonClient(name = "account-service")
+@FeignClient(name = "gateway-server", url = "192.168.99.100:8765")
 public interface AccountsServiceProxy {
 
     @GetMapping("account-service/api/accounts/{accountId}")
@@ -35,27 +35,27 @@ public interface AccountsServiceProxy {
     @Headers("Content-Type: application/json")
     CollectionModel<Users> searchForAccounts(@RequestBody HashMap<String, HashMap<String, String>> search);
 }
-
-@Component
-class AccountsServiceProxyFallback implements AccountsServiceProxy {
-
-    @Override
-    public EntityModel<Users> retrieveAccounts(long accountId) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public CollectionModel<Users> retrieveAllAccounts(int pageNumber, int pageSize) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public CollectionModel<Users> joinAccounts(String columName, List<Long> ids) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public CollectionModel<Users> searchForAccounts(HashMap<String, HashMap<String, String>> search) {
-        throw new NotImplementedException();
-    }
-}
+//
+//@Component
+//class AccountsServiceProxyFallback implements AccountsServiceProxy {
+//
+//    @Override
+//    public EntityModel<Users> retrieveAccounts(long accountId) {
+//        throw new NotImplementedException();
+//    }
+//
+//    @Override
+//    public CollectionModel<Users> retrieveAllAccounts(int pageNumber, int pageSize) {
+//        throw new NotImplementedException();
+//    }
+//
+//    @Override
+//    public CollectionModel<Users> joinAccounts(String columName, List<Long> ids) {
+//        throw new NotImplementedException();
+//    }
+//
+//    @Override
+//    public CollectionModel<Users> searchForAccounts(HashMap<String, HashMap<String, String>> search) {
+//        throw new NotImplementedException();
+//    }
+//}
