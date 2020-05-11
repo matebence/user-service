@@ -20,7 +20,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.*;
 
 @Repository
-@FeignClient(name = "gateway-server")
+@FeignClient(name = "gateway-server", fallback = AccountsServiceProxyFallback.class)
 @RibbonClient(name = "account-service")
 public interface AccountsServiceProxy {
 
