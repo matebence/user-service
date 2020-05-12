@@ -115,8 +115,9 @@ public class UserServiceHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity<Response> handleExceptions() {
+    public final ResponseEntity<Response> handleExceptions(Exception ex) {
         Response errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), Messages.EXCEPTION, true);
+        if (ex.getCause() instanceof UserServiceException) errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), ex.getCause().getMessage(), true);
         return new ResponseEntity<>(errorObj, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -62,20 +62,15 @@ public class UsersResource {
     }
 
     @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
-    @DeleteMapping("/users/{userId}")
+    @DeleteMapping("/users/{accountId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> deleteUsers(@PathVariable long userId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<Object> deleteUsers(@PathVariable long accountId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("DELETE_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Boolean result;
-        try {
-            result = this.usersService.deleteUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
-        } catch (UserServiceException ex) {
-            ex.setHttpStatus(HttpStatus.BAD_REQUEST);
-            throw ex;
-        }
-        if (!result) throw new UserServiceException(Messages.DELETE_USER, HttpStatus.BAD_REQUEST);
+        Users user = this.usersService.getUser(accountId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        if (user == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.NOT_FOUND);
+        if (!this.usersService.deleteUser(user, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")))) throw new UserServiceException(Messages.DELETE_USER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
