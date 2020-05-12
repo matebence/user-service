@@ -42,7 +42,7 @@ public class FeignClientImpl implements FeignClient, ErrorDecoder {
                 return new UserServiceException(new ObjectMapper().readValue(CharStreams.toString(response.body().asReader(StandardCharsets.UTF_8)), Response.class).getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } catch (IOException e) {
-            return new UserServiceException(Messages.EXCEPTION, HttpStatus.NOT_FOUND);
+            return new UserServiceException(Messages.SERVER_EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return errorStatus(s, response);
     }
