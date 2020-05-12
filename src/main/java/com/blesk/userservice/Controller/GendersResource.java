@@ -62,14 +62,9 @@ public class GendersResource {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("DELETE_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Boolean result;
-        try {
-            result = this.gendersService.deleteGender(genderId);
-        } catch (UserServiceException ex) {
-            ex.setHttpStatus(HttpStatus.BAD_REQUEST);
-            throw ex;
-        }
-        if (!result) throw new UserServiceException(Messages.DELETE_GENDER, HttpStatus.BAD_REQUEST);
+        Genders gender = this.gendersService.getGender(genderId);
+        if (gender == null) throw new UserServiceException(Messages.GET_GENDER, HttpStatus.NOT_FOUND);
+        if (!this.gendersService.deleteGender(genderId)) throw new UserServiceException(Messages.DELETE_GENDER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -84,12 +79,11 @@ public class GendersResource {
         if (gender == null) throw new UserServiceException(Messages.GET_GENDER, HttpStatus.BAD_REQUEST);
 
         gender.setName(genders.getName());
-
         if (!this.gendersService.updateGender(gender)) throw new UserServiceException(Messages.UPDATE_GENDER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/genders/{genderId}")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Genders> retrieveGenders(@PathVariable long genderId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -105,7 +99,7 @@ public class GendersResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/genders/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Genders>> retrieveAllGenders(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {

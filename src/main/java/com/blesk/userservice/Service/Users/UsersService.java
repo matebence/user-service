@@ -10,7 +10,7 @@ public interface UsersService {
 
     Users createUser(Users users);
 
-    Boolean deleteUser(Long userId, boolean su);
+    Boolean deleteUser(Users users, boolean su);
 
     Boolean updateUser(Users users);
 

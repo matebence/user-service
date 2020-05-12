@@ -3,6 +3,7 @@ package com.blesk.userservice.Model;
 import com.blesk.userservice.Validator.Contains;
 import com.blesk.userservice.Value.Messages;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.DynamicInsert;
@@ -28,6 +29,7 @@ public class Users implements Serializable {
     private Long userId;
 
     @Transient
+    @JsonIgnore
     private Boolean cached = false;
 
     @Transient

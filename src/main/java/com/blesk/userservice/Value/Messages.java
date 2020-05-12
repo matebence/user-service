@@ -54,12 +54,6 @@ public class Messages {
     public static final String GET_GENDER = "Ľutujeme, názov pohlavia neexistuje";
     public static final String GET_ALL_GENDERS = "Nenašiel sa žiadný záznam pre názov pohlavia";
 
-    public static final String CREATE_PLACE = "Nový záznam adresi sa nepodarilo vytvoriť";
-    public static final String DELETE_PLACE = "Odstránenie adresi sa nepodarilo";
-    public static final String UPDATE_PLACE = "Aktualizovanie adresi sa nepodarilo";
-    public static final String GET_PLACE = "Ľutujeme, adresa neexistuje";
-    public static final String GET_ALL_PLACES = "Nenašiel sa žiadný záznam pre názov adresi";
-
     public static final String CREATE_USER = "Profil pre používateľské konto sa nepodarilo vytvoriť";
     public static final String DELETE_USER = "Odstránenie profilu sa nepodarilo";
     public static final String UPDATE_USER = "Aktualizovanie profilu sa nepodarilo";

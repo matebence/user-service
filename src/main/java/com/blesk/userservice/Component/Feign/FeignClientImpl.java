@@ -16,8 +16,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static feign.FeignException.errorStatus;
-
 @Component
 public class FeignClientImpl implements FeignClient, ErrorDecoder {
 
@@ -34,7 +32,7 @@ public class FeignClientImpl implements FeignClient, ErrorDecoder {
     }
 
     @Override
-    public Exception decode(String s, feign.Response response) {
+    public UserServiceException decode(String s, feign.Response response) {
         try {
             if (response.status() >= 400 && response.status() <= 499) {
                 return new UserServiceException(new ObjectMapper().readValue(CharStreams.toString(response.body().asReader(StandardCharsets.UTF_8)), Response.class).getMessage(), HttpStatus.BAD_REQUEST);
@@ -44,6 +42,6 @@ public class FeignClientImpl implements FeignClient, ErrorDecoder {
         } catch (IOException e) {
             return new UserServiceException(Messages.SERVER_EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return errorStatus(s, response);
+        return new UserServiceException(Messages.EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
