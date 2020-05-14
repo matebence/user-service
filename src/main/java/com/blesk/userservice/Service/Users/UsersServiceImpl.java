@@ -51,11 +51,11 @@ public class UsersServiceImpl implements UsersService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Users getUser(Long accountId, boolean su) {
+    public Users getUser(Long userId, boolean su) {
         if (su) {
-            return this.usersDAO.getItemByColumn(Users.class,"accountId", accountId.toString());
+            return this.usersDAO.getItemByColumn(Users.class,"userId", userId.toString());
         } else {
-            return this.usersDAO.getItemByColumn("accountId", accountId.toString(), false);
+            return this.usersDAO.getItemByColumn("userId", userId.toString(), false);
         }
     }
 

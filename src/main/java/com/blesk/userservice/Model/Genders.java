@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @DynamicInsert
 @DynamicUpdate
@@ -24,12 +25,28 @@ public class Genders implements Serializable {
     private Long genderId;
 
     @NotNull(message = Messages.GENDERS_NAME_NOT_NULL)
-    @Size(min = 5, max = 20, message = Messages.GENDERS_NAME_SIZE)
+    @Size(min = 3, max = 20, message = Messages.GENDERS_NAME_SIZE)
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private Timestamp createdAt;
+
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
+
+    @Column(name = "deleted_at", updatable = false)
+    private Timestamp deletedAt;
+
     public Genders(String name) {
         this.name = name;
+    }
+
+    public Genders(String name, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+        this.name = name;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
     }
 
     public Genders() {
@@ -49,5 +66,29 @@ public class Genders implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Timestamp getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Timestamp getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(Timestamp deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

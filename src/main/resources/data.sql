@@ -1,9 +1,9 @@
-INSERT INTO genders (name)
-VALUES ('Muž');
-INSERT INTO genders (name)
-VALUES ('Žena');
-INSERT INTO genders (name)
-VALUES ('Iné');
+INSERT INTO genders (name, created_at)
+VALUES ('Muž', CURRENT_TIMESTAMP);
+INSERT INTO genders (name, created_at)
+VALUES ('Žena', CURRENT_TIMESTAMP);
+INSERT INTO genders (name, created_at)
+VALUES ('Iné', CURRENT_TIMESTAMP);
 
 INSERT INTO users (account_id, first_name, last_name, gender, balance, tel, is_deleted, created_at)
 VALUES (3, 'Ján', 'Široký', 'Muž', 500.00, '+421917642985', FALSE, CURRENT_TIMESTAMP);

@@ -9,8 +9,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -45,28 +47,28 @@ public class Users implements Serializable {
     @Column(name = "account_id")
     private Long accountId;
 
+    @Valid
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER, mappedBy = "users")
     private Places places;
 
     @NotNull(message = Messages.USERS_FIRST_NAME_NOT_NULL)
-    @Size(min = 5, max = 20, message = Messages.USERS_FIRST_NAME_SIZE)
+    @Size(min = 3, max = 20, message = Messages.USERS_FIRST_NAME_SIZE)
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @NotNull(message = Messages.USERS_LAST_NAME_NOT_NULL)
-    @Size(min = 5, max = 20, message = Messages.USERS_LAST_NAME_SIZE)
+    @Size(min = 3, max = 20, message = Messages.USERS_LAST_NAME_SIZE)
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Contains(message = Messages.USERS_GENDER_COTNAINS)
     @NotNull(message = Messages.USERS_GENDER_NOT_NULL)
-    @Size(min = 5, max = 20, message = Messages.USERS_GENDER_SIZE)
+    @Size(min = 3, max = 20, message = Messages.USERS_GENDER_SIZE)
     @Column(name = "gender", nullable = false)
     private String gender;
 
     @NotNull(message = Messages.USERS_BALANCE_NOT_NULL)
-    @Min(value = 1, message = Messages.USERS_BALANCE_MIN)
-    @Max(value = 99999, message = Messages.USERS_BALANCE_MAX)
+    @Range(min = 10, max = 99999, message = Messages.USERS_BALANCE_RANGE)
     @Column(name = "balance", nullable = false)
     private Double balance;
 
@@ -281,7 +283,6 @@ public class Users implements Serializable {
 
     @PrePersist
     protected void prePersist() {
-        this.balance = 0.00;
         this.isDeleted = false;
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }

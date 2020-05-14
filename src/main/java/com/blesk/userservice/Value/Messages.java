@@ -20,8 +20,7 @@ public class Messages {
     public static final String USERS_LAST_NAME_NOT_NULL = "Nezadali ste priezvisko";
     public static final String USERS_LAST_NAME_SIZE = "Priezvisko je príliž krátke alebo dlhé";
     public static final String USERS_BALANCE_NOT_NULL = "Nezadali ste sumu, ktorú chcete previesť na účet";
-    public static final String USERS_BALANCE_MIN = "Minimálna suma je 1 Eur";
-    public static final String USERS_BALANCE_MAX = "Maximálna suma je 99 999 Eur";
+    public static final String USERS_BALANCE_RANGE = "Minimálna suma je 10 Eur a maximálna suma je 99 999 Eur";
     public static final String USERS_TEL_NOT_NULL = "Nezadali ste telefonné číslo";
     public static final String USERS_TEL_SIZE = "Telefonné číslo je príliž krátke alebo dlhé";
     public static final String USERS_IMG_SIZE = "Názov obrázka je príliž krátke alebo dlhé";

@@ -67,8 +67,7 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
         countCriteria.select(criteriaBuilder.count(countCriteria.from(Users.class)));
         Long total = this.entityManager.createQuery(countCriteria).getSingleResult();
 
-        if (pageSize > total)
-            pageSize = total.intValue();
+        if (pageSize > total || pageSize == -1) pageSize = total.intValue();
 
         if ((pageNumber > 0) && (pageNumber < (Math.floor(total / pageSize))) ||
                 (pageNumber == 0) && (pageNumber < (Math.floor(total / pageSize))) ||
