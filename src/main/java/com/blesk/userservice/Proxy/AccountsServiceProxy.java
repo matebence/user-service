@@ -20,23 +20,23 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.*;
 
 @Repository
-@FeignClient(name = "gateway-server", fallback = AccountsServiceProxyFallback.class)
+@FeignClient(name = "account-service", fallback = AccountsServiceProxyFallback.class)
 @RibbonClient(name = "account-service")
 public interface AccountsServiceProxy {
 
-    @GetMapping("account-service/api/accounts/{accountId}")
+    @GetMapping("api/accounts/{accountId}")
     @Headers("Content-Type: application/json")
     EntityModel<Users> retrieveAccounts(@PathVariable("accountId") long accountId);
 
-    @GetMapping("account-service/api/accounts/page/{pageNumber}/limit/{pageSize}")
+    @GetMapping("api/accounts/page/{pageNumber}/limit/{pageSize}")
     @Headers("Content-Type: application/json")
     CollectionModel<Users> retrieveAllAccounts(@PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize);
 
-    @PostMapping("account-service/api/accounts/join/{columName}")
+    @PostMapping("api/accounts/join/{columName}")
     @Headers("Content-Type: application/json")
     CollectionModel<Users> joinAccounts(@PathVariable("columName") String columName, @RequestBody List<Long> ids);
 
-    @PostMapping("account-service/api/accounts/search")
+    @PostMapping("api/accounts/search")
     @Headers("Content-Type: application/json")
     CollectionModel<Users> searchForAccounts(@RequestBody HashMap<String, HashMap<String, String>> search);
 }
