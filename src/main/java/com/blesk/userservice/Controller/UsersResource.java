@@ -84,20 +84,20 @@ public class UsersResource {
         Users user = this.usersService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (user == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
 
-        user.setAccountId(users.getAccountId());
-        user.setFirstName(users.getFirstName());
-        user.setLastName(users.getLastName());
-        user.setGender(users.getGender());
-        user.setBalance(users.getBalance());
-        user.setTel(users.getTel());
-        user.setImg(users.getImg());
-        user.getPlaces().setCountry(users.getPlaces().getCountry());
-        user.getPlaces().setRegion(users.getPlaces().getRegion());
-        user.getPlaces().setDistrict(users.getPlaces().getDistrict());
-        user.getPlaces().setPlace(users.getPlaces().getPlace());
-        user.getPlaces().setStreet(users.getPlaces().getStreet());
-        user.getPlaces().setZip(users.getPlaces().getZip());
-        user.getPlaces().setCode(users.getPlaces().getCode());
+        user.setAccountId(getNotNull(users.getAccountId(), user.getAccountId()));
+        user.setFirstName(getNotNull(users.getFirstName(), user.getFirstName()));
+        user.setLastName(getNotNull(users.getLastName(), user.getLastName()));
+        user.setGender(getNotNull(users.getGender(), user.getGender()));
+        user.setBalance(getNotNull(users.getBalance(), user.getBalance()));
+        user.setTel(getNotNull(users.getTel(), user.getTel()));
+        user.setImg(getNotNull(users.getImg(), user.getImg()));
+        user.getPlaces().setCountry(getNotNull(users.getPlaces().getCountry(), user.getPlaces().getCountry()));
+        user.getPlaces().setRegion(getNotNull(users.getPlaces().getRegion(), user.getPlaces().getRegion()));
+        user.getPlaces().setDistrict(getNotNull(users.getPlaces().getDistrict(), user.getPlaces().getDistrict()));
+        user.getPlaces().setPlace(getNotNull(users.getPlaces().getPlace(), user.getPlaces().getPlace()));
+        user.getPlaces().setStreet(getNotNull(users.getPlaces().getStreet(), user.getPlaces().getStreet()));
+        user.getPlaces().setZip(getNotNull(users.getPlaces().getZip(), user.getPlaces().getZip()));
+        user.getPlaces().setCode(getNotNull(users.getPlaces().getCode(), user.getPlaces().getCode()));
 
         if (!this.usersService.updateUser(user)) throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
@@ -198,5 +198,9 @@ public class UsersResource {
             caches.add(cache);
         }
         return caches;
+    }
+
+    private static <T> T getNotNull(T a, T b) {
+        return b != null && a != null && !a.equals(b) ? a : b;
     }
 }
