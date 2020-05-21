@@ -6,16 +6,19 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.*;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @DynamicInsert
 @DynamicUpdate
@@ -50,6 +53,14 @@ public class Users implements Serializable {
     @Valid
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER, mappedBy = "users")
     private Places places;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "users")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Payments> payments = new HashSet<Payments>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "users")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Payouts> payouts = new HashSet<Payouts>();
 
     @NotNull(message = Messages.USERS_FIRST_NAME_NOT_NULL)
     @Size(min = 3, max = 20, message = Messages.USERS_FIRST_NAME_SIZE)
@@ -199,6 +210,34 @@ public class Users implements Serializable {
         this.places = places;
         if (this.places != null)
             this.places.setUsers(this);
+    }
+
+    public void addPayment(Payments payments) {
+        this.payments.add(payments);
+        payments.setUsers(this);
+    }
+
+    public void removePayment(Payments payments) {
+        this.payments.remove(payments);
+        payments.setUsers(null);
+    }
+
+    public Set<Payments> getPayment() {
+        return this.payments;
+    }
+
+    public void addPayout(Payouts payouts) {
+        this.payouts.add(payouts);
+        payouts.setUsers(this);
+    }
+
+    public void removePayout(Payouts payouts) {
+        this.payouts.remove(payouts);
+        payouts.setUsers(null);
+    }
+
+    public Set<Payouts> getPayout() {
+        return this.payouts;
     }
 
     public String getFirstName() {

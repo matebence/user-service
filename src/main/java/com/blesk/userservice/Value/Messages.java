@@ -45,6 +45,16 @@ public class Messages {
     public static final String PLACES_CODE_NOT_NULL = "Nezadali ste kód štátu";
     public static final String PLACES_CODE_SIZE = "Kód štátu je príliž krátke alebo dlhé";
 
+    public static final String PAYOUTS_IBAN_NOT_NULL = "Nezadali ste IBAN";
+    public static final String PAYOUTS_AMOUNT_NOT_NULL = "Nezadali ste čiastku na prevod";
+    public static final String PAYOUTS_AMOUNT_RANGE = "Minimálna čiastka je 10 Eur a maximálna čiastka je 99 999 Eur";
+
+    public static final String PAYMENTS_CREDIT_CARD_NOT_NULL = "Nezadali ste kreditnú kartu";
+    public static final String PAYMENTS_CHARGE_NOT_NULL = "Identifikacia platby nebola zadaná";
+    public static final String PAYMENTS_AMOUNT_NOT_NULL = "Nezadali ste čiastku na prevod";
+    public static final String PAYMENTS_AMOUNT_RANGE = "Minimálna čiastka je 10 Eur a maximálna čiastka je 99 999 Eur";
+    public static final String PAYMENTS_REFUNDED_NOT_NULL = "Stav platby pre vrátenie peniazí nebola zadaná";
+
 
 
     public static final String CREATE_GENDER = "Nový názov pohlavia sa nepodarilo vytvoriť";
@@ -69,6 +79,10 @@ public class Messages {
     public static final String USER_ACCOUNT_ID_UNIQUE = "Identifikačné číslo používateľského konta už existuje";
     public static final String USER_TEL_UNIQUE = "Telefóne číslo už existuje";
     public static final String GENDER_NAME_UNIQUE = "Názov pohlavia uz existuje";
+    public static final String PAYMENT_CREDIT_CARD = "Kreditná karta už existuje";
+    public static final String PAYMENT_CHARGE = "Platba už bola vykonaná";
+    public static final String PAYMENT_REFUND = "Peniaze už boli vrátené zákaznikovi";
+    public static final String PAYOUTS_IBAN = "IBAN už existuje";
 
 
 

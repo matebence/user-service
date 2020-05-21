@@ -59,6 +59,20 @@ public class UserServiceHandler {
             case "place_id":
                 unique.put("placeId", Messages.UNIQUE_FIELD_DEFAULT);
                 break;
+            case "payment_id":
+                unique.put("paymentId", Messages.UNIQUE_FIELD_DEFAULT);
+            case "payment_credit_card":
+                unique.put("creditCard", Messages.PAYMENT_CREDIT_CARD);
+            case "payment_charge":
+                unique.put("charge", Messages.PAYMENT_CHARGE);
+            case "payment_refund":
+                unique.put("refund", Messages.PAYMENT_REFUND);
+                break;
+            case "payout_id":
+                unique.put("payoutId", Messages.UNIQUE_FIELD_DEFAULT);
+            case "payout_iban":
+                unique.put("iban", Messages.PAYOUTS_IBAN);
+                break;
             case "gender_id":
                 unique.put("genderId", Messages.UNIQUE_FIELD_DEFAULT);
             case "gender_name":
