@@ -53,7 +53,7 @@ public class Messages {
     public static final String PAYMENTS_CHARGE_NOT_NULL = "Identifikacia platby nebola zadaná";
     public static final String PAYMENTS_AMOUNT_NOT_NULL = "Nezadali ste čiastku na prevod";
     public static final String PAYMENTS_AMOUNT_RANGE = "Minimálna čiastka je 10 Eur a maximálna čiastka je 99 999 Eur";
-    public static final String PAYMENTS_REFUNDED_NOT_NULL = "Stav platby pre vrátenie peniazí nebola zadaná";
+    public static final String PAYMENTS_REFUNDED_NOT_NULL = "Stav o vráteni penazí nebola zadaná";
 
 
 
