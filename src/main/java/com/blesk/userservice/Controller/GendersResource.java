@@ -4,6 +4,7 @@ import com.blesk.userservice.DTO.JwtMapper;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Model.Genders;
 import com.blesk.userservice.Service.Genders.GendersServiceImpl;
+import com.blesk.userservice.Utilitie.Tools;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,8 +79,7 @@ public class GendersResource {
         Genders gender = this.gendersService.getGender(genderId);
         if (gender == null) throw new UserServiceException(Messages.GET_GENDER, HttpStatus.BAD_REQUEST);
 
-        gender.setName(getNotNull(genders.getName(), gender.getName()));
-        if (!this.gendersService.updateGender(gender)) throw new UserServiceException(Messages.UPDATE_GENDER, HttpStatus.BAD_REQUEST);
+        if (!this.gendersService.updateGender(gender, genders)) throw new UserServiceException(Messages.UPDATE_GENDER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -133,9 +133,5 @@ public class GendersResource {
         if ((boolean) genders.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForGenders(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
         if ((boolean) genders.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForGenders(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
-    }
-
-    private static <T> T getNotNull(T a, T b) {
-        return b != null && a != null && !a.equals(b) ? a : b;
     }
 }

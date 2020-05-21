@@ -2,7 +2,6 @@ package com.blesk.userservice.Controller;
 
 import com.blesk.userservice.DTO.JwtMapper;
 import com.blesk.userservice.Exception.UserServiceException;
-import com.blesk.userservice.Model.Caches;
 import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Proxy.AccountsServiceProxy;
 import com.blesk.userservice.Service.Caches.CachesServiceImpl;
@@ -84,22 +83,7 @@ public class UsersResource {
         Users user = this.usersService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (user == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
 
-        user.setAccountId(getNotNull(users.getAccountId(), user.getAccountId()));
-        user.setFirstName(getNotNull(users.getFirstName(), user.getFirstName()));
-        user.setLastName(getNotNull(users.getLastName(), user.getLastName()));
-        user.setGender(getNotNull(users.getGender(), user.getGender()));
-        user.setBalance(getNotNull(users.getBalance(), user.getBalance()));
-        user.setTel(getNotNull(users.getTel(), user.getTel()));
-        user.setImg(getNotNull(users.getImg(), user.getImg()));
-        user.getPlaces().setCountry(getNotNull(users.getPlaces().getCountry(), user.getPlaces().getCountry()));
-        user.getPlaces().setRegion(getNotNull(users.getPlaces().getRegion(), user.getPlaces().getRegion()));
-        user.getPlaces().setDistrict(getNotNull(users.getPlaces().getDistrict(), user.getPlaces().getDistrict()));
-        user.getPlaces().setPlace(getNotNull(users.getPlaces().getPlace(), user.getPlaces().getPlace()));
-        user.getPlaces().setStreet(getNotNull(users.getPlaces().getStreet(), user.getPlaces().getStreet()));
-        user.getPlaces().setZip(getNotNull(users.getPlaces().getZip(), user.getPlaces().getZip()));
-        user.getPlaces().setCode(getNotNull(users.getPlaces().getCode(), user.getPlaces().getCode()));
-
-        if (!this.usersService.updateUser(user)) throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.BAD_REQUEST);
+        if (!this.usersService.updateUser(user, users)) throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -167,40 +151,5 @@ public class UsersResource {
         if ((boolean) users.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
         if ((boolean) users.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
-    }
-
-    private List<Users> performJoin(List<Users> users, CollectionModel<Users> accountDetails) {
-        if (accountDetails != null && accountDetails.getContent().size() == users.size()) {
-            Iterator<Users> usersIterator = users.iterator();
-            Iterator<Users> accountDetailsIterator = accountDetails.iterator();
-
-            while (usersIterator.hasNext() && accountDetailsIterator.hasNext()) {
-                Users usersIteratorValue = usersIterator.next();
-                Users accountDetailsIteratorValue = accountDetailsIterator.next();
-                usersIteratorValue.setUserName(accountDetailsIteratorValue.getUserName());
-                usersIteratorValue.setEmail(accountDetailsIteratorValue.getEmail());
-            }
-            return users;
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    private List<Caches> performCaching(CollectionModel<Users> accountDetails){
-        List<Caches> caches = new ArrayList<>();
-        for (Users user : accountDetails.getContent()) {
-            if (user.getCached()) break;
-
-            Caches cache = new Caches();
-            cache.setAccountId(user.getAccountId());
-            cache.setEmail(user.getEmail());
-            cache.setUserName(user.getUserName());
-            caches.add(cache);
-        }
-        return caches;
-    }
-
-    private static <T> T getNotNull(T a, T b) {
-        return b != null && a != null && !a.equals(b) ? a : b;
     }
 }

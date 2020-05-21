@@ -12,7 +12,7 @@ public interface GendersService {
 
     Boolean deleteGender(Long genderId);
 
-    Boolean updateGender(Genders genders);
+    Boolean updateGender(Genders gender, Genders genders);
 
     Genders getGender(Long genderId);
 

@@ -12,7 +12,7 @@ public interface UsersService {
 
     Boolean deleteUser(Users users, boolean su);
 
-    Boolean updateUser(Users users);
+    Boolean updateUser(Users user, Users users);
 
     Users getUser(Long userId, boolean su);
 
