@@ -21,6 +21,10 @@ import java.sql.Timestamp;
 @SQLDelete(sql = "UPDATE users SET is_deleted = TRUE, deleted_at = NOW() WHERE user_id = ?")
 public class Payments implements Serializable {
 
+    public enum Currency {
+        EUR, USD;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payment_id")
@@ -32,7 +36,16 @@ public class Payments implements Serializable {
 
     @NotNull(message = Messages.PAYMENTS_CREDIT_CARD_NOT_NULL)
     @Column(name = "credit_card", nullable = false)
-    private String creditCartd;
+    private String creditCard;
+
+    @Transient
+    private Integer expMonth;
+
+    @Transient
+    private Integer expYear;
+
+    @Transient
+    private String cvc;
 
     @NotNull(message = Messages.PAYMENTS_CHARGE_NOT_NULL)
     @Column(name = "charge", nullable = false)
@@ -42,6 +55,11 @@ public class Payments implements Serializable {
     @Range(min = 10, max = 99999, message = Messages.PAYMENTS_AMOUNT_RANGE)
     @Column(name = "amount", nullable = false)
     private Double amount;
+
+    @NotNull(message = Messages.PAYMENTS_CURRENCY_NOT_NULL)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "currency", nullable = false)
+    private Currency currency;
 
     @NotNull(message = Messages.PAYMENTS_REFUNDED_NOT_NULL)
     @Column(name = "refunded", nullable = false)
@@ -62,9 +80,12 @@ public class Payments implements Serializable {
     @Column(name = "deleted_at", updatable = false)
     private Timestamp deletedAt;
 
-    public Payments(Users users, String creditCartd, String charge, Double amount, Boolean refunded, String refund, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+    public Payments(Users users, String creditCard, Integer expMonth, Integer expYear, String cvc,  String charge, Double amount, Boolean refunded, String refund, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
         this.users = users;
-        this.creditCartd = creditCartd;
+        this.creditCard = creditCard;
+        this.expMonth = expMonth;
+        this.expYear = expYear;
+        this.cvc = cvc;
         this.charge = charge;
         this.amount = amount;
         this.refunded = refunded;
@@ -75,10 +96,12 @@ public class Payments implements Serializable {
         this.deletedAt = deletedAt;
     }
 
-    public Payments(String creditCartd, String charge, Double amount, Boolean refunded, String refund, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
-        this.creditCartd = creditCartd;
+    public Payments(Users users, String creditCard, String charge, Double amount, Currency currency, Boolean refunded, String refund, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+        this.users = users;
+        this.creditCard = creditCard;
         this.charge = charge;
         this.amount = amount;
+        this.currency = currency;
         this.refunded = refunded;
         this.refund = refund;
         this.isDeleted = isDeleted;
@@ -87,10 +110,24 @@ public class Payments implements Serializable {
         this.deletedAt = deletedAt;
     }
 
-    public Payments(String creditCartd, String charge, Double amount, Boolean refunded, String refund) {
-        this.creditCartd = creditCartd;
+    public Payments(String creditCard, String charge, Double amount, Currency currency, Boolean refunded, String refund, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+        this.creditCard = creditCard;
         this.charge = charge;
         this.amount = amount;
+        this.currency = currency;
+        this.refunded = refunded;
+        this.refund = refund;
+        this.isDeleted = isDeleted;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
+    }
+
+    public Payments(String creditCard, String charge, Double amount, Currency currency, Boolean refunded, String refund) {
+        this.creditCard = creditCard;
+        this.charge = charge;
+        this.amount = amount;
+        this.currency = currency;
         this.refunded = refunded;
         this.refund = refund;
     }
@@ -114,12 +151,36 @@ public class Payments implements Serializable {
         this.users = users;
     }
 
-    public String getCreditCartd() {
-        return this.creditCartd;
+    public String getCreditCard() {
+        return this.creditCard;
     }
 
-    public void setCreditCartd(String creditCartd) {
-        this.creditCartd = creditCartd;
+    public void setCreditCard(String creditCartd) {
+        this.creditCard = creditCartd;
+    }
+
+    public Integer getExpMonth() {
+        return this.expMonth;
+    }
+
+    public void setExpMonth(Integer expMonth) {
+        this.expMonth = expMonth;
+    }
+
+    public Integer getExpYear() {
+        return this.expYear;
+    }
+
+    public void setExpYear(Integer expYear) {
+        this.expYear = expYear;
+    }
+
+    public String getCvc() {
+        return this.cvc;
+    }
+
+    public void setCvc(String cvc) {
+        this.cvc = cvc;
     }
 
     public String getCharge() {
@@ -132,6 +193,14 @@ public class Payments implements Serializable {
 
     public Double getAmount() {
         return this.amount;
+    }
+
+    public Currency getCurrency() {
+        return this.currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public void setAmount(Double amount) {
@@ -189,6 +258,7 @@ public class Payments implements Serializable {
     @PrePersist
     protected void prePersist() {
         this.isDeleted = false;
+        this.refunded = false;
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 

@@ -4,15 +4,14 @@ import com.blesk.userservice.DAO.Payouts.PayoutsDAOImpl;
 import com.blesk.userservice.DAO.Users.UsersDAOImpl;
 import com.blesk.userservice.Model.Payouts;
 import com.blesk.userservice.Model.Users;
-import com.blesk.userservice.Proxy.AccountsServiceProxy;
-import com.blesk.userservice.Service.Caches.CachesServiceImpl;
+import com.blesk.userservice.Service.Accounts.AccountServiceImpl;
 import com.blesk.userservice.Service.Emails.EmailsServiceImpl;
+import com.blesk.userservice.Utilitie.Tools;
 import com.blesk.userservice.Value.Keys;
 import com.stripe.Stripe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.Lock;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,18 +29,15 @@ public class PayoutsServiceImpl implements PayoutsService {
 
     private UsersDAOImpl usersDAO;
 
-    private AccountsServiceProxy accountsServiceProxy;
-
-    private CachesServiceImpl cachesService;
+    private AccountServiceImpl accountService;
 
     private EmailsServiceImpl emailsService;
 
     @Autowired
-    public PayoutsServiceImpl(PayoutsDAOImpl payoutsDAO, UsersDAOImpl usersDAO, AccountsServiceProxy accountsServiceProxy, CachesServiceImpl cachesService, EmailsServiceImpl emailsService) {
+    public PayoutsServiceImpl(PayoutsDAOImpl payoutsDAO, UsersDAOImpl usersDAO, AccountServiceImpl accountService, EmailsServiceImpl emailsService) {
         this.payoutsDAO = payoutsDAO;
         this.usersDAO = usersDAO;
-        this.accountsServiceProxy = accountsServiceProxy;
-        this.cachesService = cachesService;
+        this.accountService = accountService;
         this.emailsService = emailsService;
     }
 
@@ -53,19 +49,14 @@ public class PayoutsServiceImpl implements PayoutsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Payouts createPayout(Payouts payouts) {
-        Users users = usersDAO.getItemByColumn(Users.class, "userId", payouts.getUsers().getUserId().toString());
+    public Payouts createPayout(Payouts payouts, boolean su) {
+        Users users = this.accountService.getUser(payouts.getUsers().getUserId(), su);
         if (users.getBalance() < payouts.getAmount()) return null;
         users.setBalance(users.getBalance() - payouts.getAmount());
 
         Payouts payout = this.payoutsDAO.save(payouts);
         if ((!this.usersDAO.update(users)) && (payout == null)) return new Payouts();
 
-        if (users.getEmail() == null){
-            CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Arrays.asList(new Long[]{users.getAccountId()}));
-            this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
-            users = this.performJoin(Collections.singletonList(users), accountDetails).iterator().next();
-        }
         this.emailsService.sendHtmlMesseage("Úspešná tranzakcia", "payouts", new HashMap<>(), users);
         return payout;
     }
@@ -84,8 +75,17 @@ public class PayoutsServiceImpl implements PayoutsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Boolean updatePayout(Payouts payouts) {
-        return this.payoutsDAO.update(payouts);
+    public Boolean updatePayout(Payouts payout, Payouts payouts) {
+        Users users = usersDAO.getItemByColumn(Users.class, "userId", payout.getUsers().getUserId().toString());
+        if (users.getBalance() < payout.getAmount()) return null;
+
+        payout.setUsers(Tools.getNotNull(payouts.getUsers(), payout.getUsers()));
+        payout.setIban(Tools.getNotNull(payouts.getIban(), payout.getIban()));
+        payout.setAmount(Tools.getNotNull(payouts.getAmount(), payout.getAmount()));
+        payout.setAccapted(Tools.getNotNull(payouts.getAccapted(), payout.getAccapted()));
+        users.setBalance((users.getBalance()+payout.getAmount()) - payouts.getAmount());
+
+        return this.payoutsDAO.update(payout);
     }
 
     @Override

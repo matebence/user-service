@@ -4,7 +4,6 @@ import com.blesk.userservice.DTO.JwtMapper;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Model.Genders;
 import com.blesk.userservice.Service.Genders.GendersServiceImpl;
-import com.blesk.userservice.Utilitie.Tools;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;

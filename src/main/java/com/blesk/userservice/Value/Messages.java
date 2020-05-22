@@ -10,6 +10,7 @@ public class Messages {
     public static final String AUTH_REQUIRED_EXCEPTION = "Prístup odmietnutý";
     public static final String SQL_EXCEPTION = "Operácia sa neuskutočnila";
     public static final String SERVER_EXCEPTION = "Ľutujeme, ale server je momentálne nedostupný";
+    public static final String STRIPE_EXCEPTION = "Ľutujeme, ale tranzakcia bola neúpešná";
     public static final String EXCEPTION = "Nastala neočakávaná chyba";
 
 
@@ -48,11 +49,13 @@ public class Messages {
     public static final String PAYOUTS_IBAN_NOT_NULL = "Nezadali ste IBAN";
     public static final String PAYOUTS_AMOUNT_NOT_NULL = "Nezadali ste čiastku na prevod";
     public static final String PAYOUTS_AMOUNT_RANGE = "Minimálna čiastka je 10 Eur a maximálna čiastka je 99 999 Eur";
+    public static final String PAYOUTS_ACCAPTED_NOT_NULL = "Nezadali stav tranzakcie";
 
     public static final String PAYMENTS_CREDIT_CARD_NOT_NULL = "Nezadali ste kreditnú kartu";
     public static final String PAYMENTS_CHARGE_NOT_NULL = "Identifikacia platby nebola zadaná";
     public static final String PAYMENTS_AMOUNT_NOT_NULL = "Nezadali ste čiastku na prevod";
     public static final String PAYMENTS_AMOUNT_RANGE = "Minimálna čiastka je 10 Eur a maximálna čiastka je 99 999 Eur";
+    public static final String PAYMENTS_CURRENCY_NOT_NULL = "Nezadali ste menu";
     public static final String PAYMENTS_REFUNDED_NOT_NULL = "Stav o vráteni penazí nebola zadaná";
 
 
@@ -62,6 +65,18 @@ public class Messages {
     public static final String UPDATE_GENDER = "Aktualizovanie názov pohlavia sa nepodarilo";
     public static final String GET_GENDER = "Ľutujeme, názov pohlavia neexistuje";
     public static final String GET_ALL_GENDERS = "Nenašiel sa žiadný záznam pre názov pohlavia";
+
+    public static final String CREATE_PAYOUT = "Prevod penazí bola neúspešne, skúste znova";
+    public static final String DELETE_PAYOUT = "Odstránenie prevodu bola neúspešná";
+    public static final String UPDATE_PAYOUT = "Aktualizovanie prevodu bola neúspešná";
+    public static final String GET_PAYOUT = "Informácia o prevode penazí nebola nájdená";
+    public static final String GET_ALL_PAYOUTS = "Nenašli sa žiadné informacie a prevode penazí";
+
+    public static final String CREATE_PAYMENT = "Peniaze sa úspešne pripísali na účet";
+    public static final String DELETE_PAYMENT = "Odstránenie pripísanej sumy na účet sa nepodarilo";
+    public static final String UPDATE_PAYMENT = "Aktualizovanie pripísanej sumy na účet sa nepodarilo";
+    public static final String GET_PAYMENT = "Informácia o prepísanej sumy sa nenašla";
+    public static final String GET_ALL_PAYMENTS = "Nenašli sa žiadné informácie o pripísaných súm";
 
     public static final String CREATE_USER = "Profil pre používateľské konto sa nepodarilo vytvoriť";
     public static final String DELETE_USER = "Odstránenie profilu sa nepodarilo";

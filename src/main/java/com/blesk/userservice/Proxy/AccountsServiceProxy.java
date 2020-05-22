@@ -1,9 +1,9 @@
 package com.blesk.userservice.Proxy;
 
+import com.blesk.userservice.Cache.Accounts;
 import com.blesk.userservice.Exception.UserServiceException;
-import com.blesk.userservice.Model.Caches;
 import com.blesk.userservice.Model.Users;
-import com.blesk.userservice.Service.Caches.CachesServiceImpl;
+import com.blesk.userservice.Service.Accounts.Cache.CacheServiceImpl;
 import com.blesk.userservice.Value.Messages;
 import feign.Headers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,16 +44,16 @@ public interface AccountsServiceProxy {
 @Component
 class AccountsServiceProxyFallback implements AccountsServiceProxy {
 
-    private CachesServiceImpl cachesService;
+    private CacheServiceImpl cachesService;
 
     @Autowired
-    public AccountsServiceProxyFallback(CachesServiceImpl cachesService) {
+    public AccountsServiceProxyFallback(CacheServiceImpl cachesService) {
         this.cachesService = cachesService;
     }
 
     @Override
     public CollectionModel<Users> joinAccounts(String columName, List<Long> ids) {
-        Iterable<Caches> caches = this.cachesService.getAllCache(ids);
+        Iterable<Accounts> caches = this.cachesService.getAllCache(ids);
         List<Users> users = new ArrayList<>();
         caches.forEach(cache -> {
             users.add(new Users(true, cache.getAccountId(), cache.getUserName(), cache.getEmail()));

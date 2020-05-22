@@ -1,10 +1,10 @@
-package com.blesk.userservice.Service.Caches;
+package com.blesk.userservice.Service.Accounts.Cache;
 
 import com.blesk.userservice.Cache.Accounts;
 
 import java.util.List;
 
-public interface CachesService {
+public interface CacheService {
 
     Iterable<Accounts> createOrUpdatCache(List<Accounts> caches);
 

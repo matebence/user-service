@@ -3,8 +3,7 @@ package com.blesk.userservice.Controller;
 import com.blesk.userservice.DTO.JwtMapper;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Model.Users;
-import com.blesk.userservice.Proxy.AccountsServiceProxy;
-import com.blesk.userservice.Service.Caches.CachesServiceImpl;
+import com.blesk.userservice.Service.Accounts.AccountServiceImpl;
 import com.blesk.userservice.Service.Users.UsersServiceImpl;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
@@ -22,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -35,14 +33,13 @@ public class UsersResource {
     private final static int DEFAULT_NUMBER = 0;
 
     private UsersServiceImpl usersService;
-    private CachesServiceImpl cachesService;
-    private AccountsServiceProxy accountsServiceProxy;
+
+    private AccountServiceImpl accountService;
 
     @Autowired
-    public UsersResource(UsersServiceImpl usersService, CachesServiceImpl cachesService, AccountsServiceProxy accountsServiceProxy) {
+    public UsersResource(UsersServiceImpl usersService, AccountServiceImpl accountService) {
         this.usersService = usersService;
-        this.cachesService = cachesService;
-        this.accountsServiceProxy = accountsServiceProxy;
+        this.accountService = accountService;
     }
 
     @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
@@ -94,12 +91,8 @@ public class UsersResource {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("VIEW_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Users users = this.usersService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Users users = this.accountService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (users == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
-
-        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Arrays.asList(new Long[]{users.getAccountId()}));
-        this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
-        users = this.performJoin(Arrays.asList(new Users[]{users}), accountDetails).iterator().next();
 
         EntityModel<Users> entityModel = new EntityModel<Users>(users);
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveUsers(userId, httpServletRequest, httpServletResponse)).withSelfRel());
@@ -112,15 +105,10 @@ public class UsersResource {
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Users>> retrieveAllUsers(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_USERS"))
-            throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        List<Users> users = this.usersService.getAllUsers(pageNumber, pageSize, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+            List<Users> users = this.accountService.getAllUsers(pageNumber, pageSize, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (users == null || users.isEmpty()) throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.BAD_REQUEST);
-
-        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", users.stream().map(Users::getAccountId).collect(Collectors.toList()));
-        this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
-        users = this.performJoin(users, accountDetails);
 
         CollectionModel<List<Users>> collectionModel = new CollectionModel(users);
         collectionModel.add(linkTo(methodOn(this.getClass()).retrieveAllUsers(pageNumber, pageSize, httpServletRequest, httpServletResponse)).withSelfRel());
@@ -137,15 +125,10 @@ public class UsersResource {
         if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         if (search.get(Keys.PAGINATION) == null) throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
 
-        Map<String, Object> users = this.usersService.searchForUser(search, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Map<String, Object> users = this.accountService.searchForUser(search, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (users == null || users.isEmpty()) throw new UserServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
-        List<Users> user = (List<Users>) users.get("results");
-        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", user.stream().map(Users::getAccountId).collect(Collectors.toList()));
-        this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
-        user = this.performJoin(user, accountDetails);
-
-        CollectionModel<List<Users>> collectionModel = new CollectionModel(user);
+        CollectionModel<List<Users>> collectionModel = new CollectionModel((List<Users>) users.get("results"));
         collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withSelfRel());
 
         if ((boolean) users.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));

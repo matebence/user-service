@@ -8,11 +8,11 @@ import java.util.Map;
 
 public interface PayoutsService {
 
-    Payouts createPayout(Payouts payouts);
+    Payouts createPayout(Payouts payouts, boolean su);
 
     Boolean deletePayout(Payouts payouts, boolean su);
 
-    Boolean updatePayout(Payouts payouts);
+    Boolean updatePayout(Payouts payout, Payouts payouts);
 
     Payouts getPayout(Long payoutId, boolean su);
 

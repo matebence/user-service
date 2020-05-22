@@ -1,10 +1,18 @@
 package com.blesk.userservice.Service.Payments;
 
 import com.blesk.userservice.DAO.Payments.PaymentsDAOImpl;
-import com.blesk.userservice.DAO.Payouts.PayoutsDAOImpl;
+import com.blesk.userservice.DAO.Users.UsersDAOImpl;
 import com.blesk.userservice.Model.Payments;
+import com.blesk.userservice.Model.Users;
+import com.blesk.userservice.Service.Accounts.AccountServiceImpl;
 import com.blesk.userservice.Service.Emails.EmailsServiceImpl;
+import com.blesk.userservice.Utilitie.Tools;
+import com.blesk.userservice.Value.Keys;
 import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
+import com.stripe.model.Refund;
+import com.stripe.model.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.Lock;
@@ -25,11 +33,17 @@ public class PaymentsServiceImpl implements PaymentsService {
 
     private PaymentsDAOImpl paymentsDAO;
 
+    private UsersDAOImpl usersDAO;
+
+    private AccountServiceImpl accountService;
+
     private EmailsServiceImpl emailsService;
 
     @Autowired
-    public PaymentsServiceImpl(PaymentsDAOImpl paymentsDAO, EmailsServiceImpl emailsService) {
+    public PaymentsServiceImpl(PaymentsDAOImpl paymentsDAO, UsersDAOImpl usersDAO, AccountServiceImpl accountService, EmailsServiceImpl emailsService) {
         this.paymentsDAO = paymentsDAO;
+        this.usersDAO = usersDAO;
+        this.accountService = accountService;
         this.emailsService = emailsService;
     }
 
@@ -41,56 +55,116 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Payments createPayment(Payments payments) {
-        return null;
+    public Payments createPayment(Payments payments, boolean su) throws StripeException {
+        Users users = this.accountService.getUser(payments.getUsers().getUserId(), su);
+
+        if (payments.getAmount() < 10) return null;
+        Map<String, Object> creditCard = new HashMap<>();
+        creditCard.put("number", payments.getCreditCard());
+        creditCard.put("exp_month", payments.getExpMonth());
+        creditCard.put("exp_year", payments.getExpYear());
+        creditCard.put("cvc", payments.getCvc());
+        Map<String, Object> creditCardSummary = new HashMap<>();
+        creditCardSummary.put("card", creditCard);
+        Token token = Token.create(creditCardSummary);
+
+        if (token.getId() == null) return null;
+        Map<String, Object> paymentSummary = new HashMap<>();
+        paymentSummary.put("amount", payments.getAmount());
+        paymentSummary.put("currency", payments.getCurrency());
+        paymentSummary.put("source", token.getId());
+        paymentSummary.put("description", String.format("User with email %s payed %f", payments.getUsers().getEmail(), payments.getAmount()));
+        Charge charge = Charge.create(paymentSummary);
+
+        if (charge.getId() == null) return null;
+        payments.setCreditCard(token.getId());
+        payments.setCharge(charge.getId());
+        users.setBalance(payments.getAmount());
+
+        Payments payment = this.paymentsDAO.save(payments);
+        if ((!this.usersDAO.update(users)) && (payment == null)) return new Payments();
+        this.emailsService.sendHtmlMesseage("Úspešná platba", "payments", new HashMap<>(), users);
+        return payment;
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Payments createRefund(Payments payments) {
-        return null;
+    public Payments createRefund(Payments payments, boolean su) throws StripeException {
+        Users users = this.accountService.getUser(payments.getUsers().getUserId(), su);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("charge", payments.getCharge());
+        Refund refund = Refund.create(params);
+
+        if (refund.getId() == null) return null;
+        payments.setRefund(refund.getId());
+
+        if ((!this.paymentsDAO.update(payments))) return new Payments();
+        this.emailsService.sendHtmlMesseage("Vrátenie platby", "refunds", new HashMap<>(), users);
+        return payments;
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Boolean deletePayment(Long paymentId) {
-        return null;
+    public Boolean deletePayment(Payments payments, boolean su) {
+        if (su) {
+            return this.paymentsDAO.delete("payments", "payment_id", payments.getPaymentId());
+        } else {
+            return this.paymentsDAO.softDelete(payments);
+        }
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Boolean updatePayment(Payments payments) {
-        return null;
+    public Boolean updatePayment(Payments payment, Payments payments) {
+        payment.setUsers(Tools.getNotNull(payments.getUsers(), payment.getUsers()));
+        payment.setCreditCard(Tools.getNotNull(payments.getCreditCard(), payment.getCreditCard()));
+        payment.setCharge(Tools.getNotNull(payments.getCharge(), payment.getCharge()));
+        payment.setRefund(Tools.getNotNull(payments.getRefund(), payment.getRefund()));
+
+        return this.paymentsDAO.update(payment);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Payments getPayment(Long genderId) {
-        return null;
+    public Payments getPayment(Long paymentId, boolean su) {
+        if (su) {
+            return this.paymentsDAO.getItemByColumn(Payments.class, "paymentId", paymentId.toString());
+        } else {
+            return this.paymentsDAO.getItemByColumn("paymentId", paymentId.toString(), false);
+        }
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Payments findPaymentByCreditCard(String creditCard) {
-        return null;
+    public Payments findPaymentByCreditCard(String iban, boolean isDeleted) {
+        return this.paymentsDAO.getItemByColumn("creditCard", iban, isDeleted);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public List<Payments> getAllPayments(int pageNumber, int pageSize) {
-        return null;
+    public List<Payments> getAllPayments(int pageNumber, int pageSize, boolean su) {
+        if (su) {
+            return this.paymentsDAO.getAll(Payments.class, pageNumber, pageSize);
+        } else {
+            return this.paymentsDAO.getAll(pageNumber, pageSize, false);
+        }
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForPayment(HashMap<String, HashMap<String, String>> criteria) {
-        return null;
+    public Map<String, Object> searchForPayment(HashMap<String, HashMap<String, String>> criteria, boolean su) {
+        if (su) {
+            return this.paymentsDAO.searchBy(Payments.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
+        } else {
+            return this.paymentsDAO.searchBy(criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)), false);
+        }
     }
 }

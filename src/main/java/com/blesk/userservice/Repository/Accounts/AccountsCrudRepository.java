@@ -1,4 +1,4 @@
-package com.blesk.userservice.Repository.Cache;
+package com.blesk.userservice.Repository.Accounts;
 
 import com.blesk.userservice.Cache.Accounts;
 import org.springframework.data.repository.CrudRepository;

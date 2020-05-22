@@ -1,7 +1,7 @@
-package com.blesk.userservice.Service.Caches;
+package com.blesk.userservice.Service.Accounts.Cache;
 
 import com.blesk.userservice.Cache.Accounts;
-import com.blesk.userservice.Repository.Cache.AccountsCrudRepository;
+import com.blesk.userservice.Repository.Accounts.AccountsCrudRepository;
 import com.blesk.userservice.Value.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,25 +18,25 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CachesServiceImpl implements CachesService {
+public class CacheServiceImpl implements CacheService {
 
     private AccountsCrudRepository accountsCrudRepository;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public CachesServiceImpl(AccountsCrudRepository accountsCrudRepository) {
+    public CacheServiceImpl(AccountsCrudRepository accountsCrudRepository) {
         this.accountsCrudRepository = accountsCrudRepository;
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Iterable<Accounts> createOrUpdatCache(List<Accounts> caches) {
+    public Iterable<Accounts> createOrUpdatCache(List<Accounts> accounts) {
         List<Accounts> result = new ArrayList<>();
         try {
-            for (Accounts cache : caches) {
-                result.add(this.accountsCrudRepository.save(cache));
+            for (Accounts account : accounts) {
+                result.add(this.accountsCrudRepository.save(account));
             }
         } catch (DataAccessException ex) {
             this.logger.info(Messages.CREATE_CACHE);
@@ -50,9 +50,9 @@ public class CachesServiceImpl implements CachesService {
     @Lock(value = LockModeType.READ)
     public Iterable<Accounts> getAllCache(Iterable<Long> ids) {
         try {
-            Iterable<Accounts> caches = this.accountsCrudRepository.findAllById(ids);
-            if (caches == null) this.logger.info(Messages.NOT_FOUND_CACHE);
-            return caches;
+            Iterable<Accounts> accounts = this.accountsCrudRepository.findAllById(ids);
+            if (accounts == null) this.logger.info(Messages.NOT_FOUND_CACHE);
+            return accounts;
         }catch (DataAccessException ex){
             this.logger.info(Messages.FIND_CACHE);
         }

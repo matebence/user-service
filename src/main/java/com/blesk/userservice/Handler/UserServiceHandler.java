@@ -3,6 +3,7 @@ package com.blesk.userservice.Handler;
 import com.blesk.userservice.DTO.Response;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Value.Messages;
+import com.stripe.exception.StripeException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -89,6 +90,12 @@ public class UserServiceHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public final ResponseEntity<Response> handleTypeMismatchException() {
         Response errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), Messages.TYPE_MISMATCH_EXCEPTION, true);
+        return new ResponseEntity<>(errorObj, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(StripeException.class)
+    public final ResponseEntity<Response> handleStripeException() {
+        Response errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), Messages.STRIPE_EXCEPTION, true);
         return new ResponseEntity<>(errorObj, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 

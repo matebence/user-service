@@ -39,6 +39,10 @@ public class Payouts implements Serializable {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
+    @NotNull(message = Messages.PAYOUTS_ACCAPTED_NOT_NULL)
+    @Column(name = "accapted", nullable = false)
+    private Boolean accapted;
+
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 
@@ -51,19 +55,21 @@ public class Payouts implements Serializable {
     @Column(name = "deleted_at", updatable = false)
     private Timestamp deletedAt;
 
-    public Payouts(Users users, String iban, Double amount, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+    public Payouts(Users users, String iban, Double amount, Boolean accapted, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
         this.users = users;
         this.iban = iban;
         this.amount = amount;
+        this.accapted = accapted;
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
     }
 
-    public Payouts(String iban, Double amount, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+    public Payouts(String iban, Double amount, Boolean isDeleted, Boolean accapted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
         this.iban = iban;
         this.amount = amount;
+        this.accapted = accapted;
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -116,6 +122,14 @@ public class Payouts implements Serializable {
         this.amount = amount;
     }
 
+    public Boolean getAccapted() {
+        return this.accapted;
+    }
+
+    public void setAccapted(Boolean accapted) {
+        this.accapted = accapted;
+    }
+
     public Boolean getDeleted() {
         return this.isDeleted;
     }
@@ -151,6 +165,7 @@ public class Payouts implements Serializable {
     @PrePersist
     protected void prePersist() {
         this.isDeleted = false;
+        this.accapted = false;
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
