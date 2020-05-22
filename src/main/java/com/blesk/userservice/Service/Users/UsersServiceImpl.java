@@ -17,11 +17,10 @@ import java.util.Map;
 @Service
 public class UsersServiceImpl implements UsersService {
 
+    @Autowired
     private UsersDAOImpl usersDAO;
 
-    @Autowired
-    public UsersServiceImpl(UsersDAOImpl usersDAO) {
-        this.usersDAO = usersDAO;
+    public UsersServiceImpl() {
     }
 
     @Override

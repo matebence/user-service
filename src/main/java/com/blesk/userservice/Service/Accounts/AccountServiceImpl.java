@@ -28,8 +28,6 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
 
     @Autowired
     public AccountServiceImpl(UsersDAOImpl usersDAO, CacheServiceImpl cachesService, AccountsServiceProxy accountsServiceProxy){
-        super(usersDAO);
-
         this.usersDAO = usersDAO;
         this.cachesService = cachesService;
         this.accountsServiceProxy = accountsServiceProxy;

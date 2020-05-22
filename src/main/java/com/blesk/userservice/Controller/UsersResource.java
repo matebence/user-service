@@ -4,7 +4,6 @@ import com.blesk.userservice.DTO.JwtMapper;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Service.Accounts.AccountServiceImpl;
-import com.blesk.userservice.Service.Users.UsersServiceImpl;
 import com.blesk.userservice.Value.Keys;
 import com.blesk.userservice.Value.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +31,10 @@ public class UsersResource {
     private final static int DEFAULT_PAGE_SIZE = 10;
     private final static int DEFAULT_NUMBER = 0;
 
-    private UsersServiceImpl usersService;
-
     private AccountServiceImpl accountService;
 
     @Autowired
-    public UsersResource(UsersServiceImpl usersService, AccountServiceImpl accountService) {
-        this.usersService = usersService;
+    public UsersResource(AccountServiceImpl accountService) {
         this.accountService = accountService;
     }
 
@@ -49,7 +45,7 @@ public class UsersResource {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("CREATE_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Users user = this.usersService.createUser(users);
+        Users user = this.accountService.createUser(users);
         if (user == null) throw new UserServiceException(Messages.CREATE_USER, HttpStatus.BAD_REQUEST);
 
         EntityModel<Users> entityModel = new EntityModel<Users>(user);
@@ -64,9 +60,9 @@ public class UsersResource {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("DELETE_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Users user = this.usersService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Users user = this.accountService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (user == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.NOT_FOUND);
-        if (!this.usersService.deleteUser(user, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")))) throw new UserServiceException(Messages.DELETE_USER, HttpStatus.BAD_REQUEST);
+        if (!this.accountService.deleteUser(user, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")))) throw new UserServiceException(Messages.DELETE_USER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -77,10 +73,10 @@ public class UsersResource {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Users user = this.usersService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Users user = this.accountService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (user == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
 
-        if (!this.usersService.updateUser(user, users)) throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.BAD_REQUEST);
+        if (!this.accountService.updateUser(user, users)) throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
