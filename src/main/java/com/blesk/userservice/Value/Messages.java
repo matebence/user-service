@@ -20,8 +20,7 @@ public class Messages {
     public static final String USERS_FIRST_NAME_SIZE = "Meno je príliž krátke alebo dlhé";
     public static final String USERS_LAST_NAME_NOT_NULL = "Nezadali ste priezvisko";
     public static final String USERS_LAST_NAME_SIZE = "Priezvisko je príliž krátke alebo dlhé";
-    public static final String USERS_BALANCE_NOT_NULL = "Nezadali ste sumu, ktorú chcete previesť na účet";
-    public static final String USERS_BALANCE_RANGE = "Minimálna suma je 10 Eur a maximálna suma je 99 999 Eur";
+    public static final String USERS_BALANCE_RANGE = "Minimálna suma je 0 Eur a maximálna suma je 99 999 Eur";
     public static final String USERS_TEL_NOT_NULL = "Nezadali ste telefonné číslo";
     public static final String USERS_TEL_SIZE = "Telefonné číslo je príliž krátke alebo dlhé";
     public static final String USERS_IMG_SIZE = "Názov obrázka je príliž krátke alebo dlhé";
@@ -49,14 +48,11 @@ public class Messages {
     public static final String PAYOUTS_IBAN_NOT_NULL = "Nezadali ste IBAN";
     public static final String PAYOUTS_AMOUNT_NOT_NULL = "Nezadali ste čiastku na prevod";
     public static final String PAYOUTS_AMOUNT_RANGE = "Minimálna čiastka je 10 Eur a maximálna čiastka je 99 999 Eur";
-    public static final String PAYOUTS_ACCAPTED_NOT_NULL = "Nezadali stav tranzakcie";
 
     public static final String PAYMENTS_CREDIT_CARD_NOT_NULL = "Nezadali ste kreditnú kartu";
-    public static final String PAYMENTS_CHARGE_NOT_NULL = "Identifikacia platby nebola zadaná";
     public static final String PAYMENTS_AMOUNT_NOT_NULL = "Nezadali ste čiastku na prevod";
     public static final String PAYMENTS_AMOUNT_RANGE = "Minimálna čiastka je 10 Eur a maximálna čiastka je 99 999 Eur";
     public static final String PAYMENTS_CURRENCY_NOT_NULL = "Nezadali ste menu";
-    public static final String PAYMENTS_REFUNDED_NOT_NULL = "Stav o vráteni penazí nebola zadaná";
 
 
 
@@ -66,13 +62,14 @@ public class Messages {
     public static final String GET_GENDER = "Ľutujeme, názov pohlavia neexistuje";
     public static final String GET_ALL_GENDERS = "Nenašiel sa žiadný záznam pre názov pohlavia";
 
-    public static final String CREATE_PAYOUT = "Prevod penazí bola neúspešne, skúste znova";
+    public static final String CREATE_PAYOUT = "Prevod penazí bola neúspešná, skúste znova";
     public static final String DELETE_PAYOUT = "Odstránenie prevodu bola neúspešná";
     public static final String UPDATE_PAYOUT = "Aktualizovanie prevodu bola neúspešná";
     public static final String GET_PAYOUT = "Informácia o prevode penazí nebola nájdená";
     public static final String GET_ALL_PAYOUTS = "Nenašli sa žiadné informacie a prevode penazí";
 
-    public static final String CREATE_PAYMENT = "Peniaze sa úspešne pripísali na účet";
+    public static final String CREATE_PAYMENT = "Prevod penazí bola neúspešná, skúste znova";
+    public static final String CREATE_REFUND = "Ľutujeme, ale peniaze sa nepodarilo pripísať späť na účet";
     public static final String DELETE_PAYMENT = "Odstránenie pripísanej sumy na účet sa nepodarilo";
     public static final String UPDATE_PAYMENT = "Aktualizovanie pripísanej sumy na účet sa nepodarilo";
     public static final String GET_PAYMENT = "Informácia o prepísanej sumy sa nenašla";
@@ -97,7 +94,6 @@ public class Messages {
     public static final String PAYMENT_CREDIT_CARD = "Kreditná karta už existuje";
     public static final String PAYMENT_CHARGE = "Platba už bola vykonaná";
     public static final String PAYMENT_REFUND = "Peniaze už boli vrátené zákaznikovi";
-    public static final String PAYOUTS_IBAN = "IBAN už existuje";
 
 
 

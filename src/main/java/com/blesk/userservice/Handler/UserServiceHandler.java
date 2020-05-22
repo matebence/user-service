@@ -52,8 +52,10 @@ public class UserServiceHandler {
         switch (exDetail.getConstraintName()) {
             case "user_id":
                 unique.put("userId", Messages.UNIQUE_FIELD_DEFAULT);
+                break;
             case "user_account_id":
                 unique.put("accountId", Messages.USER_ACCOUNT_ID_UNIQUE);
+                break;
             case "user_tel":
                 unique.put("tel", Messages.USER_TEL_UNIQUE);
                 break;
@@ -62,20 +64,22 @@ public class UserServiceHandler {
                 break;
             case "payment_id":
                 unique.put("paymentId", Messages.UNIQUE_FIELD_DEFAULT);
+                break;
             case "payment_credit_card":
                 unique.put("creditCard", Messages.PAYMENT_CREDIT_CARD);
+                break;
             case "payment_charge":
                 unique.put("charge", Messages.PAYMENT_CHARGE);
+                break;
             case "payment_refund":
                 unique.put("refund", Messages.PAYMENT_REFUND);
                 break;
             case "payout_id":
                 unique.put("payoutId", Messages.UNIQUE_FIELD_DEFAULT);
-            case "payout_iban":
-                unique.put("iban", Messages.PAYOUTS_IBAN);
                 break;
             case "gender_id":
                 unique.put("genderId", Messages.UNIQUE_FIELD_DEFAULT);
+                break;
             case "gender_name":
                 unique.put("name", Messages.GENDER_NAME_UNIQUE);
                 break;

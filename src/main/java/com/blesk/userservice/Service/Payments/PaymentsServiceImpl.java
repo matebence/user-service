@@ -70,16 +70,16 @@ public class PaymentsServiceImpl implements PaymentsService {
 
         if (token.getId() == null) return null;
         Map<String, Object> paymentSummary = new HashMap<>();
-        paymentSummary.put("amount", payments.getAmount());
+        paymentSummary.put("amount", Math.round(payments.getAmount() * 100));
         paymentSummary.put("currency", payments.getCurrency());
         paymentSummary.put("source", token.getId());
-        paymentSummary.put("description", String.format("User with email %s payed %f", payments.getUsers().getEmail(), payments.getAmount()));
+        paymentSummary.put("description", String.format("User with email %s successfully  transferred money", users.getEmail()));
         Charge charge = Charge.create(paymentSummary);
 
         if (charge.getId() == null) return null;
         payments.setCreditCard(token.getId());
         payments.setCharge(charge.getId());
-        users.setBalance(payments.getAmount());
+        users.setBalance(users.getBalance()+payments.getAmount());
 
         Payments payment = this.paymentsDAO.save(payments);
         if ((!this.usersDAO.update(users)) && (payment == null)) return new Payments();
@@ -91,18 +91,21 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Transactional
     @Lock(value = LockModeType.WRITE)
     public Payments createRefund(Payments payments, boolean su) throws StripeException {
-        Users users = this.accountService.getUser(payments.getUsers().getUserId(), su);
+        Payments payment = this.paymentsDAO.getItemByColumn(Payments.class, "charge", payments.getCharge());
 
+        if (payment == null) return null;
         Map<String, Object> params = new HashMap<>();
-        params.put("charge", payments.getCharge());
+        params.put("charge", payment.getCharge());
         Refund refund = Refund.create(params);
 
         if (refund.getId() == null) return null;
-        payments.setRefund(refund.getId());
+        payment.setRefund(refund.getId());
+        payment.setRefunded(refund.getStatus().equals("succeeded"));
 
-        if ((!this.paymentsDAO.update(payments))) return new Payments();
+        if ((!this.paymentsDAO.update(payment))) return new Payments();
+        Users users = this.accountService.getUser(payment.getUsers().getUserId(), su);
         this.emailsService.sendHtmlMesseage("Vrátenie platby", "refunds", new HashMap<>(), users);
-        return payments;
+        return payment;
     }
 
     @Override

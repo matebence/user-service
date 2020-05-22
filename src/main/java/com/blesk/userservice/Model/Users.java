@@ -78,8 +78,7 @@ public class Users implements Serializable {
     @Column(name = "gender", nullable = false)
     private String gender;
 
-    @NotNull(message = Messages.USERS_BALANCE_NOT_NULL)
-    @Range(min = 10, max = 99999, message = Messages.USERS_BALANCE_RANGE)
+    @Range(min = 0, max = 99999, message = Messages.USERS_BALANCE_RANGE)
     @Column(name = "balance", nullable = false)
     private Double balance;
 
@@ -322,6 +321,7 @@ public class Users implements Serializable {
 
     @PrePersist
     protected void prePersist() {
+        this.balance = 0.00;
         this.isDeleted = false;
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }

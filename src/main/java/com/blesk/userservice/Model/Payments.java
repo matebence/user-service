@@ -47,7 +47,6 @@ public class Payments implements Serializable {
     @Transient
     private String cvc;
 
-    @NotNull(message = Messages.PAYMENTS_CHARGE_NOT_NULL)
     @Column(name = "charge", nullable = false)
     private String charge;
 
@@ -61,7 +60,6 @@ public class Payments implements Serializable {
     @Column(name = "currency", nullable = false)
     private Currency currency;
 
-    @NotNull(message = Messages.PAYMENTS_REFUNDED_NOT_NULL)
     @Column(name = "refunded", nullable = false)
     private Boolean refunded;
 

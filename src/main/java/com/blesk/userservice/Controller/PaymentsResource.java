@@ -64,7 +64,7 @@ public class PaymentsResource {
         if (!jwtMapper.getGrantedPrivileges().contains("CREATE_PAYMENTS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Payments payment = this.paymentsService.createRefund(payments, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
-        if ((payment == null) || (payment.getPaymentId() == null)) throw new UserServiceException(Messages.CREATE_PAYMENT, HttpStatus.BAD_REQUEST);
+        if ((payment == null) || (!payment.getRefunded())) throw new UserServiceException(Messages.CREATE_REFUND, HttpStatus.BAD_REQUEST);
         return new EntityModel<Payments>(payment);
     }
 

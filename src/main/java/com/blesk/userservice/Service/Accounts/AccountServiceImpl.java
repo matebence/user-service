@@ -1,6 +1,6 @@
 package com.blesk.userservice.Service.Accounts;
 
-import com.blesk.userservice.Cache.Accounts;
+import com.blesk.userservice.Model.Cache.Accounts;
 import com.blesk.userservice.DAO.Users.UsersDAOImpl;
 import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Proxy.AccountsServiceProxy;

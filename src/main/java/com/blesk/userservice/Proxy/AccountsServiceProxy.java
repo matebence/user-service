@@ -1,6 +1,6 @@
 package com.blesk.userservice.Proxy;
 
-import com.blesk.userservice.Cache.Accounts;
+import com.blesk.userservice.Model.Cache.Accounts;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Service.Accounts.Cache.CacheServiceImpl;

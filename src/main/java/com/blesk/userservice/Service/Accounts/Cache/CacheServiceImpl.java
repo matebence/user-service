@@ -1,6 +1,6 @@
 package com.blesk.userservice.Service.Accounts.Cache;
 
-import com.blesk.userservice.Cache.Accounts;
+import com.blesk.userservice.Model.Cache.Accounts;
 import com.blesk.userservice.Repository.Accounts.AccountsCrudRepository;
 import com.blesk.userservice.Value.Messages;
 import org.slf4j.Logger;

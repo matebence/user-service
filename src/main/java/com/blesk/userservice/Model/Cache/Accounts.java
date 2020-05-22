@@ -1,4 +1,4 @@
-package com.blesk.userservice.Cache;
+package com.blesk.userservice.Model.Cache;
 
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.annotation.Id;

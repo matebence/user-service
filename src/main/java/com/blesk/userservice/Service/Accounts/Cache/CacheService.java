@@ -1,6 +1,6 @@
 package com.blesk.userservice.Service.Accounts.Cache;
 
-import com.blesk.userservice.Cache.Accounts;
+import com.blesk.userservice.Model.Cache.Accounts;
 
 import java.util.List;
 

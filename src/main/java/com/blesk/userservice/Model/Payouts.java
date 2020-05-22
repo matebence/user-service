@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @DynamicInsert
 @DynamicUpdate
 @Entity(name = "Payouts")
-@Table(name = "payouts", uniqueConstraints = {@UniqueConstraint(name = "payout_id", columnNames = "payout_id"), @UniqueConstraint(name = "payout_iban", columnNames = "iban")})
+@Table(name = "payouts", uniqueConstraints = {@UniqueConstraint(name = "payout_id", columnNames = "payout_id")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, scope = Payouts.class)
 @SQLDelete(sql = "UPDATE users SET is_deleted = TRUE, deleted_at = NOW() WHERE user_id = ?")
 public class Payouts implements Serializable {
@@ -39,7 +39,6 @@ public class Payouts implements Serializable {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
-    @NotNull(message = Messages.PAYOUTS_ACCAPTED_NOT_NULL)
     @Column(name = "accapted", nullable = false)
     private Boolean accapted;
 
