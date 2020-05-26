@@ -11,9 +11,9 @@ public interface PaymentsDAO extends DAO<Payments> {
 
     Boolean softDelete(Payments payments);
 
-    Payments getItemByColumn(String column, String value, boolean isDeleted);
+    Payments getItemByColumn(String column, String value);
 
-    List<Payments> getAll(int pageNumber, int pageSize, boolean isDeleted);
+    List<Payments> getAll(int pageNumber, int pageSize);
 
-    Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias, boolean isDeleted);
+    Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias);
 }

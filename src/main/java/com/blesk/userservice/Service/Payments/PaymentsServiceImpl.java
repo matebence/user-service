@@ -78,7 +78,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         if (charge.getId() == null) return null;
         payments.setCreditCard(token.getId());
         payments.setCharge(charge.getId());
-        users.setBalance(users.getBalance()+payments.getAmount());
+        users.setBalance(users.getBalance() + payments.getAmount());
 
         Payments payment = this.paymentsDAO.save(payments);
         if ((!this.usersDAO.update(users)) && (payment == null)) return new Payments();
@@ -137,15 +137,19 @@ public class PaymentsServiceImpl implements PaymentsService {
         if (su) {
             return this.paymentsDAO.getItemByColumn(Payments.class, "paymentId", paymentId.toString());
         } else {
-            return this.paymentsDAO.getItemByColumn("paymentId", paymentId.toString(), false);
+            return this.paymentsDAO.getItemByColumn("paymentId", paymentId.toString());
         }
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Payments findPaymentByCreditCard(String iban, boolean isDeleted) {
-        return this.paymentsDAO.getItemByColumn("creditCard", iban, isDeleted);
+    public Payments findPaymentByCreditCard(String iban, boolean su) {
+        if (su) {
+            return this.paymentsDAO.getItemByColumn(Payments.class, "creditCard", iban);
+        } else {
+            return this.paymentsDAO.getItemByColumn("creditCard", iban);
+        }
     }
 
     @Override
@@ -155,7 +159,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         if (su) {
             return this.paymentsDAO.getAll(Payments.class, pageNumber, pageSize);
         } else {
-            return this.paymentsDAO.getAll(pageNumber, pageSize, false);
+            return this.paymentsDAO.getAll(pageNumber, pageSize);
         }
     }
 
@@ -166,7 +170,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         if (su) {
             return this.paymentsDAO.searchBy(Payments.class, criterias);
         } else {
-            return this.paymentsDAO.searchBy(criterias, false);
+            return this.paymentsDAO.searchBy(criterias);
         }
     }
 }

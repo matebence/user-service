@@ -16,9 +16,9 @@ public interface UsersService {
 
     Users getUser(Long userId, boolean su);
 
-    Users findUserByFirstName(String firstName, boolean isDeleted);
+    Users findUserByFirstName(String firstName, boolean su);
 
-    Users findUserByLastName(String lastName, boolean isDeleted);
+    Users findUserByLastName(String lastName, boolean su);
 
     List<Users> getAllUsers(int pageNumber, int pageSize, boolean su);
 

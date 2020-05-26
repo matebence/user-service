@@ -94,15 +94,19 @@ public class PayoutsServiceImpl implements PayoutsService {
         if (su) {
             return this.payoutsDAO.getItemByColumn(Payouts.class,"payoutId", payoutId.toString());
         } else {
-            return this.payoutsDAO.getItemByColumn("payoutId", payoutId.toString(), false);
+            return this.payoutsDAO.getItemByColumn("payoutId", payoutId.toString());
         }
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Payouts findPayoutByIban(String iban, boolean isDeleted) {
-        return this.payoutsDAO.getItemByColumn("iban", iban, isDeleted);
+    public Payouts findPayoutByIban(String iban, boolean su) {
+        if (su){
+            return this.payoutsDAO.getItemByColumn(Payouts.class, "iban", iban);
+        } else {
+            return this.payoutsDAO.getItemByColumn("iban", iban);
+        }
     }
 
     @Override
@@ -112,7 +116,7 @@ public class PayoutsServiceImpl implements PayoutsService {
         if (su) {
             return this.payoutsDAO.getAll(Payouts.class, pageNumber, pageSize);
         } else {
-            return this.payoutsDAO.getAll(pageNumber, pageSize, false);
+            return this.payoutsDAO.getAll(pageNumber, pageSize);
         }
     }
 
@@ -123,7 +127,7 @@ public class PayoutsServiceImpl implements PayoutsService {
         if (su) {
             return this.payoutsDAO.searchBy(Payouts.class, criterias);
         } else {
-            return this.payoutsDAO.searchBy(criterias, false);
+            return this.payoutsDAO.searchBy(criterias);
         }
     }
 }

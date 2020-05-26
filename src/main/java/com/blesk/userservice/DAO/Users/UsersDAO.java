@@ -11,11 +11,11 @@ public interface UsersDAO extends DAO<Users> {
 
     Boolean softDelete(Users users);
 
-    Users get(Long id, boolean isDeleted);
+    Users get(Long id);
 
-    List<Users> getAll(int pageNumber, int pageSize, boolean isDeleted);
+    List<Users> getAll(int pageNumber, int pageSize);
 
-    Users getItemByColumn(String column, String value, boolean isDeleted);
+    Users getItemByColumn(String column, String value);
 
-    Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias, boolean isDeleted);
+    Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias);
 }

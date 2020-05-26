@@ -46,14 +46,14 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
     }
 
     @Override
-    public Users get(Long id, boolean isDeleted) {
+    public Users get(Long id) {
         Session session = this.entityManager.unwrap(Session.class);
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Users> criteriaQuery = criteriaBuilder.createQuery(Users.class);
         Root<Users> root = criteriaQuery.from(Users.class);
 
         try {
-            return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get("accountId"), id), criteriaBuilder.equal(root.get("isDeleted"), isDeleted)))).getSingleResult();
+            return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get("accountId"), id), criteriaBuilder.equal(root.get("isDeleted"), false)))).getSingleResult();
         } catch (Exception ex) {
             session.clear();
             session.close();
@@ -62,7 +62,7 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
     }
 
     @Override
-    public List<Users> getAll(int pageNumber, int pageSize, boolean isDeleted) {
+    public List<Users> getAll(int pageNumber, int pageSize) {
         Session session = this.entityManager.unwrap(Session.class);
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
@@ -74,7 +74,7 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
 
             CriteriaQuery<Users> criteriaQuery = criteriaBuilder.createQuery(Users.class);
             Root<Users> select = criteriaQuery.from(Users.class);
-            CriteriaQuery<Users> entity = criteriaQuery.select(select).where(criteriaBuilder.equal(select.get("isDeleted"), isDeleted)).orderBy(criteriaBuilder.asc(select.get("createdAt")));
+            CriteriaQuery<Users> entity = criteriaQuery.select(select).where(criteriaBuilder.equal(select.get("isDeleted"), false)).orderBy(criteriaBuilder.asc(select.get("createdAt")));
 
             TypedQuery<Users> typedQuery = session.createQuery(entity);
             typedQuery.setFirstResult(pageNumber);
@@ -87,14 +87,14 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
     }
 
     @Override
-    public Users getItemByColumn(String column, String value, boolean isDeleted) {
+    public Users getItemByColumn(String column, String value) {
         Session session = this.entityManager.unwrap(Session.class);
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Users> criteriaQuery = criteriaBuilder.createQuery(Users.class);
         Root<Users> root = criteriaQuery.from(Users.class);
 
         try {
-            return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get(column), value), criteriaBuilder.equal(root.get("isDeleted"), isDeleted)))).getSingleResult();
+            return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get(column), value), criteriaBuilder.equal(root.get("isDeleted"), false)))).getSingleResult();
         } catch (Exception ex) {
             session.clear();
             session.close();
@@ -103,7 +103,7 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
     }
 
     @Override
-    public Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias, boolean isDeleted) {
+    public Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias) {
         Session session = this.entityManager.unwrap(Session.class);
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         HashMap<String, Object> map = new HashMap<>(); PageImpl page = null;
@@ -112,7 +112,7 @@ public class UsersDAOImpl extends DAOImpl<Users> implements UsersDAO {
             CriteriaQuery<Users> criteriaQuery = criteriaBuilder.createQuery(Users.class);
             Root<Users> root = criteriaQuery.from(Users.class);
             List<Predicate> predicates = new ArrayList<Predicate>();
-            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), isDeleted));
+            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
             CriteriaQuery<Users> select = criteriaQuery.select(root);
 
             if (criterias.get(Keys.SEARCH) != null) {

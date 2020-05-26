@@ -30,14 +30,14 @@ public class PayoutsDAOImpl extends DAOImpl<Payouts> implements PayoutsDAO {
     }
 
     @Override
-    public Payouts getItemByColumn(String column, String value, boolean isDeleted) {
+    public Payouts getItemByColumn(String column, String value) {
         Session session = this.entityManager.unwrap(Session.class);
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Payouts> criteriaQuery = criteriaBuilder.createQuery(Payouts.class);
         Root<Payouts> root = criteriaQuery.from(Payouts.class);
 
         try {
-            return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get(column), value), criteriaBuilder.equal(root.get("isDeleted"), isDeleted)))).getSingleResult();
+            return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get(column), value), criteriaBuilder.equal(root.get("isDeleted"), false)))).getSingleResult();
         } catch (Exception ex) {
             session.clear();
             session.close();
@@ -46,7 +46,7 @@ public class PayoutsDAOImpl extends DAOImpl<Payouts> implements PayoutsDAO {
     }
 
     @Override
-    public List<Payouts> getAll(int pageNumber, int pageSize, boolean isDeleted) {
+    public List<Payouts> getAll(int pageNumber, int pageSize) {
         Session session = this.entityManager.unwrap(Session.class);
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
@@ -58,7 +58,7 @@ public class PayoutsDAOImpl extends DAOImpl<Payouts> implements PayoutsDAO {
 
             CriteriaQuery<Payouts> criteriaQuery = criteriaBuilder.createQuery(Payouts.class);
             Root<Payouts> select = criteriaQuery.from(Payouts.class);
-            CriteriaQuery<Payouts> entity = criteriaQuery.select(select).where(criteriaBuilder.equal(select.get("isDeleted"), isDeleted)).orderBy(criteriaBuilder.asc(select.get("createdAt")));
+            CriteriaQuery<Payouts> entity = criteriaQuery.select(select).where(criteriaBuilder.equal(select.get("isDeleted"), false)).orderBy(criteriaBuilder.asc(select.get("createdAt")));
 
             TypedQuery<Payouts> typedQuery = session.createQuery(entity);
             typedQuery.setFirstResult(pageNumber);
@@ -71,7 +71,7 @@ public class PayoutsDAOImpl extends DAOImpl<Payouts> implements PayoutsDAO {
     }
 
     @Override
-    public Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias, boolean isDeleted) {
+    public Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias) {
         Session session = this.entityManager.unwrap(Session.class);
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         HashMap<String, Object> map = new HashMap<>(); PageImpl page = null;
@@ -80,7 +80,7 @@ public class PayoutsDAOImpl extends DAOImpl<Payouts> implements PayoutsDAO {
             CriteriaQuery<Payouts> criteriaQuery = criteriaBuilder.createQuery(Payouts.class);
             Root<Payouts> root = criteriaQuery.from(Payouts.class);
             List<Predicate> predicates = new ArrayList<Predicate>();
-            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), isDeleted));
+            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), false));
             CriteriaQuery<Payouts> select = criteriaQuery.select(root);
 
             if (criterias.get(Keys.SEARCH) != null) {

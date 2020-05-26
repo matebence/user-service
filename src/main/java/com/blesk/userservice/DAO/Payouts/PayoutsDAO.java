@@ -11,9 +11,9 @@ public interface PayoutsDAO extends DAO<Payouts> {
 
     Boolean softDelete(Payouts payouts);
 
-    Payouts getItemByColumn(String column, String value, boolean isDeleted);
+    Payouts getItemByColumn(String column, String value);
 
-    List<Payouts> getAll(int pageNumber, int pageSize, boolean isDeleted);
+    List<Payouts> getAll(int pageNumber, int pageSize);
 
-    Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias, boolean isDeleted);
+    Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias);
 }

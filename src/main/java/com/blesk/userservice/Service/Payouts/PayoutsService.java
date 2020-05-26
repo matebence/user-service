@@ -16,7 +16,7 @@ public interface PayoutsService {
 
     Payouts getPayout(Long payoutId, boolean su);
 
-    Payouts findPayoutByIban(String iban, boolean isDeleted);
+    Payouts findPayoutByIban(String iban, boolean su);
 
     List<Payouts> getAllPayouts(int pageNumber, int pageSize, boolean su);
 

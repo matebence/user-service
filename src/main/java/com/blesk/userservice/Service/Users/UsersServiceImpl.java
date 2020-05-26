@@ -69,22 +69,30 @@ public class UsersServiceImpl implements UsersService {
         if (su) {
             return this.usersDAO.getItemByColumn(Users.class, "userId", userId.toString());
         } else {
-            return this.usersDAO.getItemByColumn("userId", userId.toString(), false);
+            return this.usersDAO.getItemByColumn("userId", userId.toString());
         }
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Users findUserByFirstName(String firstName, boolean isDeleted) {
-        return this.usersDAO.getItemByColumn("firstName", firstName, isDeleted);
+    public Users findUserByFirstName(String firstName, boolean su) {
+        if (su) {
+            return this.usersDAO.getItemByColumn(Users.class, "firstName", firstName);
+        } else{
+            return this.usersDAO.getItemByColumn("firstName", firstName);
+        }
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Users findUserByLastName(String lastName, boolean isDeleted) {
-        return this.usersDAO.getItemByColumn("lastName", lastName, isDeleted);
+    public Users findUserByLastName(String lastName, boolean su) {
+        if (su) {
+            return this.usersDAO.getItemByColumn(Users.class, "lastName", lastName);
+        } else{
+            return this.usersDAO.getItemByColumn("lastName", lastName);
+        }
     }
 
     @Override
@@ -94,7 +102,7 @@ public class UsersServiceImpl implements UsersService {
         if (su) {
             return this.usersDAO.getAll(Users.class, pageNumber, pageSize);
         } else {
-            return this.usersDAO.getAll(pageNumber, pageSize, false);
+            return this.usersDAO.getAll(pageNumber, pageSize);
         }
     }
 
@@ -105,7 +113,7 @@ public class UsersServiceImpl implements UsersService {
         if (su) {
             return this.usersDAO.searchBy(Users.class, criterias);
         } else {
-            return this.usersDAO.searchBy(criterias, false);
+            return this.usersDAO.searchBy(criterias);
         }
     }
 }

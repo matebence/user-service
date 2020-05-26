@@ -56,12 +56,12 @@ public class PaymentsResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @PostMapping("/refunds")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Payments> createRefunds(@Valid @RequestBody Payments payments, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws StripeException {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_PAYMENTS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_REFUNDS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         Payments payment = this.paymentsService.createRefund(payments, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if ((payment == null) || (!payment.getRefunded())) throw new UserServiceException(Messages.CREATE_REFUND, HttpStatus.BAD_REQUEST);

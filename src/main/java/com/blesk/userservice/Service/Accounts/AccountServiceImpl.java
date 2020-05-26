@@ -40,7 +40,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
         if (su) {
             users = this.usersDAO.getItemByColumn(Users.class, "userId", userId.toString());
         } else {
-            users =  this.usersDAO.getItemByColumn("userId", userId.toString(), false);
+            users =  this.usersDAO.getItemByColumn("userId", userId.toString());
         }
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Collections.singletonList(users.getAccountId()));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
@@ -55,7 +55,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
         if (su) {
             users = this.usersDAO.getAll(Users.class, pageNumber, pageSize);
         } else {
-            users = this.usersDAO.getAll(pageNumber, pageSize, false);
+            users = this.usersDAO.getAll(pageNumber, pageSize);
         }
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", users.stream().map(Users::getAccountId).collect(Collectors.toList()));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
@@ -70,7 +70,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
         if (su) {
             users = this.usersDAO.searchBy(Users.class, criterias);
         } else {
-            users = this.usersDAO.searchBy(criterias, false);
+            users = this.usersDAO.searchBy(criterias);
         }
         List<Users> user = (List<Users>) users.get("results");
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", user.stream().map(Users::getAccountId).collect(Collectors.toList()));
@@ -80,13 +80,13 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     }
 
     @Override
-    public Users findUserByFirstName(String firstName, boolean isDeleted) {
-        return super.findUserByFirstName(firstName, isDeleted);
+    public Users findUserByFirstName(String firstName, boolean su) {
+        return super.findUserByFirstName(firstName, su);
     }
 
     @Override
-    public Users findUserByLastName(String lastName, boolean isDeleted) {
-        return super.findUserByLastName(lastName, isDeleted);
+    public Users findUserByLastName(String lastName, boolean su) {
+        return super.findUserByLastName(lastName, su);
     }
 
     @Override

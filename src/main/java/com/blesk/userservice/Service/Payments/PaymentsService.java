@@ -19,7 +19,7 @@ public interface PaymentsService {
 
     Payments getPayment(Long paymentId, boolean su);
 
-    Payments findPaymentByCreditCard(String iban, boolean isDeleted);
+    Payments findPaymentByCreditCard(String iban, boolean su);
 
     List<Payments> getAllPayments(int pageNumber, int pageSize, boolean su);
 
