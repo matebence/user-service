@@ -23,5 +23,5 @@ public interface PaymentsService {
 
     List<Payments> getAllPayments(int pageNumber, int pageSize, boolean su);
 
-    Map<String, Object> searchForPayment(HashMap<String, HashMap<String, String>> criteria, boolean su);
+    Map<String, Object> searchForPayment(HashMap<String, HashMap<String, String>> criterias, boolean su);
 }

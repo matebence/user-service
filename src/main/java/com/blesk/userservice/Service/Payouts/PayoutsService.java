@@ -20,5 +20,5 @@ public interface PayoutsService {
 
     List<Payouts> getAllPayouts(int pageNumber, int pageSize, boolean su);
 
-    Map<String, Object> searchForPayout(HashMap<String, HashMap<String, String>> criteria, boolean su);
+    Map<String, Object> searchForPayout(HashMap<String, HashMap<String, String>> criterias, boolean su);
 }

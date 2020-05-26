@@ -6,7 +6,6 @@ import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Proxy.AccountsServiceProxy;
 import com.blesk.userservice.Service.Accounts.Cache.CacheServiceImpl;
 import com.blesk.userservice.Service.Users.UsersServiceImpl;
-import com.blesk.userservice.Value.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.hateoas.CollectionModel;
@@ -66,12 +65,12 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criteria, boolean su) {
+    public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias, boolean su) {
         Map<String, Object> users;
         if (su) {
-            users = this.usersDAO.searchBy(Users.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
+            users = this.usersDAO.searchBy(Users.class, criterias);
         } else {
-            users = this.usersDAO.searchBy(criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)), false);
+            users = this.usersDAO.searchBy(criterias, false);
         }
         List<Users> user = (List<Users>) users.get("results");
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", user.stream().map(Users::getAccountId).collect(Collectors.toList()));

@@ -3,7 +3,6 @@ package com.blesk.userservice.Service.Genders;
 import com.blesk.userservice.DAO.Genders.GendersDAOImpl;
 import com.blesk.userservice.Model.Genders;
 import com.blesk.userservice.Utilitie.Tools;
-import com.blesk.userservice.Value.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
@@ -63,8 +62,8 @@ public class GendersServiceImpl implements GendersService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForGender(HashMap<String, HashMap<String, String>> criteria) {
-        return this.gendersDAO.searchBy(Genders.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
+    public Map<String, Object> searchForGender(HashMap<String, HashMap<String, String>> criterias) {
+        return this.gendersDAO.searchBy(Genders.class, criterias);
     }
 
     @Override

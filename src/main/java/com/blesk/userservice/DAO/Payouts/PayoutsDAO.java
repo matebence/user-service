@@ -15,5 +15,5 @@ public interface PayoutsDAO extends DAO<Payouts> {
 
     List<Payouts> getAll(int pageNumber, int pageSize, boolean isDeleted);
 
-    Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias, int pageNumber, boolean isDeleted);
+    Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias, boolean isDeleted);
 }

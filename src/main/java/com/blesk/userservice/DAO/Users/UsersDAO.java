@@ -17,5 +17,5 @@ public interface UsersDAO extends DAO<Users> {
 
     Users getItemByColumn(String column, String value, boolean isDeleted);
 
-    Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias, int pageNumber, boolean isDeleted);
+    Map<String, Object> searchBy(HashMap<String, HashMap<String, String>> criterias, boolean isDeleted);
 }

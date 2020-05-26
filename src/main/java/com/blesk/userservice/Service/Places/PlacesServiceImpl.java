@@ -2,7 +2,6 @@ package com.blesk.userservice.Service.Places;
 
 import com.blesk.userservice.DAO.Places.PlacesDAOImpl;
 import com.blesk.userservice.Model.Places;
-import com.blesk.userservice.Value.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
@@ -61,8 +60,8 @@ public class PlacesServiceImpl implements PlacesService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForPlace(HashMap<String, HashMap<String, String>> criteria) {
-        return this.placesDAO.searchBy(Places.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
+    public Map<String, Object> searchForPlace(HashMap<String, HashMap<String, String>> criterias) {
+        return this.placesDAO.searchBy(Places.class, criterias);
     }
 
     @Override

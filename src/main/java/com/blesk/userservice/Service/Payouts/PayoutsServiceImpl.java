@@ -7,7 +7,6 @@ import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Service.Accounts.AccountServiceImpl;
 import com.blesk.userservice.Service.Emails.EmailsServiceImpl;
 import com.blesk.userservice.Utilitie.Tools;
-import com.blesk.userservice.Value.Keys;
 import com.stripe.Stripe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -120,11 +119,11 @@ public class PayoutsServiceImpl implements PayoutsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForPayout(HashMap<String, HashMap<String, String>> criteria, boolean su) {
+    public Map<String, Object> searchForPayout(HashMap<String, HashMap<String, String>> criterias, boolean su) {
         if (su) {
-            return this.payoutsDAO.searchBy(Payouts.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
+            return this.payoutsDAO.searchBy(Payouts.class, criterias);
         } else {
-            return this.payoutsDAO.searchBy(criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)), false);
+            return this.payoutsDAO.searchBy(criterias, false);
         }
     }
 }

@@ -3,7 +3,6 @@ package com.blesk.userservice.Service.Users;
 import com.blesk.userservice.DAO.Users.UsersDAOImpl;
 import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Utilitie.Tools;
-import com.blesk.userservice.Value.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
@@ -102,11 +101,11 @@ public class UsersServiceImpl implements UsersService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criteria, boolean su) {
+    public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias, boolean su) {
         if (su) {
-            return this.usersDAO.searchBy(Users.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
+            return this.usersDAO.searchBy(Users.class, criterias);
         } else {
-            return this.usersDAO.searchBy(criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)), false);
+            return this.usersDAO.searchBy(criterias, false);
         }
     }
 }

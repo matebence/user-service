@@ -22,5 +22,5 @@ public interface UsersService {
 
     List<Users> getAllUsers(int pageNumber, int pageSize, boolean su);
 
-    Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criteria, boolean su);
+    Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias, boolean su);
 }

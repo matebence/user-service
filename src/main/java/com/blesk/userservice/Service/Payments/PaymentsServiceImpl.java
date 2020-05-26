@@ -7,7 +7,6 @@ import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Service.Accounts.AccountServiceImpl;
 import com.blesk.userservice.Service.Emails.EmailsServiceImpl;
 import com.blesk.userservice.Utilitie.Tools;
-import com.blesk.userservice.Value.Keys;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
@@ -163,11 +162,11 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForPayment(HashMap<String, HashMap<String, String>> criteria, boolean su) {
+    public Map<String, Object> searchForPayment(HashMap<String, HashMap<String, String>> criterias, boolean su) {
         if (su) {
-            return this.paymentsDAO.searchBy(Payments.class, criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)));
+            return this.paymentsDAO.searchBy(Payments.class, criterias);
         } else {
-            return this.paymentsDAO.searchBy(criteria, Integer.parseInt(criteria.get(Keys.PAGINATION).get(Keys.PAGE_NUMBER)), false);
+            return this.paymentsDAO.searchBy(criterias, false);
         }
     }
 }
