@@ -90,18 +90,4 @@ public class JwtMapper {
     public void setGrantedPrivileges(Collection<String> grantedPrivileges) {
         this.grantedPrivileges = grantedPrivileges;
     }
-
-    @Override
-    public String toString() {
-        return "JwtMapper{" +
-                "login_id=" + login_id +
-                ", account_id=" + account_id +
-                ", user_name='" + user_name + '\'' +
-                ", exp=" + exp +
-                ", jti='" + jti + '\'' +
-                ", client_id='" + client_id + '\'' +
-                ", activated=" + activated +
-                ", grantedPrivileges=" + grantedPrivileges +
-                '}';
-    }
 }
