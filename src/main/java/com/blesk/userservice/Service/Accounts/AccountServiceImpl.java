@@ -35,12 +35,12 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Users getUser(Long userId, boolean su) {
+    public Users getUser(Long accountId, boolean su) {
         Users users;
         if (su) {
-            users = this.usersDAO.getItemByColumn(Users.class, "userId", userId.toString());
+            users = this.usersDAO.getItemByColumn(Users.class, "accountId", accountId.toString());
         } else {
-            users =  this.usersDAO.getItemByColumn("userId", userId.toString());
+            users =  this.usersDAO.getItemByColumn("accountId", accountId.toString());
         }
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Collections.singletonList(users.getAccountId()));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));

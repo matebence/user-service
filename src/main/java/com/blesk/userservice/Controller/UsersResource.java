@@ -54,13 +54,13 @@ public class UsersResource {
     }
 
     @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
-    @DeleteMapping("/users/{userId}")
+    @DeleteMapping("/users/{accountId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> deleteUsers(@PathVariable long userId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<Object> deleteUsers(@PathVariable long accountId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("DELETE_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Users user = this.accountService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Users user = this.accountService.getUser(accountId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (user == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.NOT_FOUND);
         if (!this.accountService.deleteUser(user, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")))) throw new UserServiceException(Messages.DELETE_USER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
@@ -81,17 +81,17 @@ public class UsersResource {
     }
 
     @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
-    @GetMapping("/users/{userId}")
+    @GetMapping("/users/{accountId}")
     @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Users> retrieveUsers(@PathVariable long userId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public EntityModel<Users> retrieveUsers(@PathVariable long accountId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("VIEW_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Users users = this.accountService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Users users = this.accountService.getUser(accountId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
         if (users == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
 
         EntityModel<Users> entityModel = new EntityModel<Users>(users);
-        entityModel.add(linkTo(methodOn(this.getClass()).retrieveUsers(userId, httpServletRequest, httpServletResponse)).withSelfRel());
+        entityModel.add(linkTo(methodOn(this.getClass()).retrieveUsers(accountId, httpServletRequest, httpServletResponse)).withSelfRel());
         entityModel.add(linkTo(methodOn(this.getClass()).retrieveAllUsers(UsersResource.DEFAULT_NUMBER, UsersResource.DEFAULT_PAGE_SIZE, httpServletRequest, httpServletResponse)).withRel("all-users"));
         return entityModel;
     }
