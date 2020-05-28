@@ -6,7 +6,6 @@ import com.blesk.userservice.Model.Payouts;
 import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Service.Accounts.AccountServiceImpl;
 import com.blesk.userservice.Service.Emails.EmailsServiceImpl;
-import com.blesk.userservice.Utilitie.Tools;
 import com.stripe.Stripe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,10 +77,10 @@ public class PayoutsServiceImpl implements PayoutsService {
         Users users = usersDAO.getItemByColumn(Users.class, "userId", payout.getUsers().getUserId().toString());
         if (users.getBalance() < payout.getAmount()) return null;
 
-        payout.setUsers(Tools.getNotNull(payouts.getUsers(), payout.getUsers()));
-        payout.setIban(Tools.getNotNull(payouts.getIban(), payout.getIban()));
-        payout.setAmount(Tools.getNotNull(payouts.getAmount(), payout.getAmount()));
-        payout.setAccapted(Tools.getNotNull(payouts.getAccapted(), payout.getAccapted()));
+        payout.setUsers(payouts.getUsers());
+        payout.setIban(payouts.getIban());
+        payout.setAmount(payouts.getAmount());
+        payout.setAccapted(payouts.getAccapted());
         users.setBalance((users.getBalance()+payout.getAmount()) - payouts.getAmount());
 
         return this.payoutsDAO.update(payout);

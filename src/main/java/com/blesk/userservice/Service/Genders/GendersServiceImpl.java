@@ -2,7 +2,6 @@ package com.blesk.userservice.Service.Genders;
 
 import com.blesk.userservice.DAO.Genders.GendersDAOImpl;
 import com.blesk.userservice.Model.Genders;
-import com.blesk.userservice.Utilitie.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class GendersServiceImpl implements GendersService {
     @Transactional
     @Lock(value = LockModeType.WRITE)
     public Boolean updateGender(Genders gender, Genders genders) {
-        gender.setName(Tools.getNotNull(genders.getName(), gender.getName()));
+        gender.setName(genders.getName());
         return this.gendersDAO.update(gender);
     }
 

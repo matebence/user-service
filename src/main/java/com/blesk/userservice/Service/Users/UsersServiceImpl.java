@@ -2,7 +2,6 @@ package com.blesk.userservice.Service.Users;
 
 import com.blesk.userservice.DAO.Users.UsersDAOImpl;
 import com.blesk.userservice.Model.Users;
-import com.blesk.userservice.Utilitie.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
@@ -44,20 +43,20 @@ public class UsersServiceImpl implements UsersService {
     @Transactional
     @Lock(value = LockModeType.WRITE)
     public Boolean updateUser(Users user, Users users) {
-        user.setAccountId(Tools.getNotNull(users.getAccountId(), user.getAccountId()));
-        user.setFirstName(Tools.getNotNull(users.getFirstName(), user.getFirstName()));
-        user.setLastName(Tools.getNotNull(users.getLastName(), user.getLastName()));
-        user.setGender(Tools.getNotNull(users.getGender(), user.getGender()));
-        user.setBalance(Tools.getNotNull(users.getBalance(), user.getBalance()));
-        user.setTel(Tools.getNotNull(users.getTel(), user.getTel()));
-        user.setImg(Tools.getNotNull(users.getImg(), user.getImg()));
-        user.getPlaces().setCountry(Tools.getNotNull(users.getPlaces().getCountry(), user.getPlaces().getCountry()));
-        user.getPlaces().setRegion(Tools.getNotNull(users.getPlaces().getRegion(), user.getPlaces().getRegion()));
-        user.getPlaces().setDistrict(Tools.getNotNull(users.getPlaces().getDistrict(), user.getPlaces().getDistrict()));
-        user.getPlaces().setPlace(Tools.getNotNull(users.getPlaces().getPlace(), user.getPlaces().getPlace()));
-        user.getPlaces().setStreet(Tools.getNotNull(users.getPlaces().getStreet(), user.getPlaces().getStreet()));
-        user.getPlaces().setZip(Tools.getNotNull(users.getPlaces().getZip(), user.getPlaces().getZip()));
-        user.getPlaces().setCode(Tools.getNotNull(users.getPlaces().getCode(), user.getPlaces().getCode()));
+        user.setAccountId(users.getAccountId());
+        user.setFirstName(users.getFirstName());
+        user.setLastName(users.getLastName());
+        user.setGender(users.getGender());
+        user.setBalance(users.getBalance());
+        user.setTel(users.getTel());
+        user.setImg(users.getImg());
+        user.getPlaces().setCountry(users.getPlaces().getCountry());
+        user.getPlaces().setRegion(users.getPlaces().getRegion());
+        user.getPlaces().setDistrict(users.getPlaces().getDistrict());
+        user.getPlaces().setPlace(users.getPlaces().getPlace());
+        user.getPlaces().setStreet(users.getPlaces().getStreet());
+        user.getPlaces().setZip(users.getPlaces().getZip());
+        user.getPlaces().setCode(users.getPlaces().getCode());
 
         return this.usersDAO.update(user);
     }

@@ -6,7 +6,6 @@ import com.blesk.userservice.Model.Payments;
 import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Service.Accounts.AccountServiceImpl;
 import com.blesk.userservice.Service.Emails.EmailsServiceImpl;
-import com.blesk.userservice.Utilitie.Tools;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
@@ -122,10 +121,10 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Transactional
     @Lock(value = LockModeType.WRITE)
     public Boolean updatePayment(Payments payment, Payments payments) {
-        payment.setUsers(Tools.getNotNull(payments.getUsers(), payment.getUsers()));
-        payment.setCreditCard(Tools.getNotNull(payments.getCreditCard(), payment.getCreditCard()));
-        payment.setCharge(Tools.getNotNull(payments.getCharge(), payment.getCharge()));
-        payment.setRefund(Tools.getNotNull(payments.getRefund(), payment.getRefund()));
+        payment.setUsers(payments.getUsers());
+        payment.setCreditCard(payments.getCreditCard());
+        payment.setCharge(payments.getCharge());
+        payment.setRefund(payments.getRefund());
 
         return this.paymentsDAO.update(payment);
     }
