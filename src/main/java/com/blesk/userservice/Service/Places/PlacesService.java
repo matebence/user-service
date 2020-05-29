@@ -20,5 +20,5 @@ public interface PlacesService {
 
     List<Places> getAllPlaces(int pageNumber, int pageSize);
 
-    Map<String, Object> searchForPlace(HashMap<String, HashMap<String, String>> criteria);
+    Map<String, Object> searchForPlace(HashMap<String, HashMap<String, String>> criterias);
 }

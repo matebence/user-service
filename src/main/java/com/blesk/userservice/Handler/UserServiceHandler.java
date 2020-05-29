@@ -3,6 +3,7 @@ package com.blesk.userservice.Handler;
 import com.blesk.userservice.DTO.Response;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Value.Messages;
+import com.stripe.exception.StripeException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -51,16 +52,34 @@ public class UserServiceHandler {
         switch (exDetail.getConstraintName()) {
             case "user_id":
                 unique.put("userId", Messages.UNIQUE_FIELD_DEFAULT);
+                break;
             case "user_account_id":
                 unique.put("accountId", Messages.USER_ACCOUNT_ID_UNIQUE);
+                break;
             case "user_tel":
                 unique.put("tel", Messages.USER_TEL_UNIQUE);
                 break;
             case "place_id":
                 unique.put("placeId", Messages.UNIQUE_FIELD_DEFAULT);
                 break;
+            case "payment_id":
+                unique.put("paymentId", Messages.UNIQUE_FIELD_DEFAULT);
+                break;
+            case "payment_credit_card":
+                unique.put("creditCard", Messages.PAYMENT_CREDIT_CARD);
+                break;
+            case "payment_charge":
+                unique.put("charge", Messages.PAYMENT_CHARGE);
+                break;
+            case "payment_refund":
+                unique.put("refund", Messages.PAYMENT_REFUND);
+                break;
+            case "payout_id":
+                unique.put("payoutId", Messages.UNIQUE_FIELD_DEFAULT);
+                break;
             case "gender_id":
                 unique.put("genderId", Messages.UNIQUE_FIELD_DEFAULT);
+                break;
             case "gender_name":
                 unique.put("name", Messages.GENDER_NAME_UNIQUE);
                 break;
@@ -75,6 +94,12 @@ public class UserServiceHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public final ResponseEntity<Response> handleTypeMismatchException() {
         Response errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), Messages.TYPE_MISMATCH_EXCEPTION, true);
+        return new ResponseEntity<>(errorObj, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(StripeException.class)
+    public final ResponseEntity<Response> handleStripeException() {
+        Response errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), Messages.STRIPE_EXCEPTION, true);
         return new ResponseEntity<>(errorObj, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 

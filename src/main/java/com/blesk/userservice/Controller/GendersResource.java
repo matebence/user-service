@@ -78,8 +78,7 @@ public class GendersResource {
         Genders gender = this.gendersService.getGender(genderId);
         if (gender == null) throw new UserServiceException(Messages.GET_GENDER, HttpStatus.BAD_REQUEST);
 
-        gender.setName(genders.getName());
-        if (!this.gendersService.updateGender(gender)) throw new UserServiceException(Messages.UPDATE_GENDER, HttpStatus.BAD_REQUEST);
+        if (!this.gendersService.updateGender(gender, genders)) throw new UserServiceException(Messages.UPDATE_GENDER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 

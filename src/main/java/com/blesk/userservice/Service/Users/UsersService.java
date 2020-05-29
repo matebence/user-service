@@ -12,15 +12,15 @@ public interface UsersService {
 
     Boolean deleteUser(Users users, boolean su);
 
-    Boolean updateUser(Users users);
+    Boolean updateUser(Users user, Users users);
 
-    Users getUser(Long userId, boolean su);
+    Users getUser(Long accountId, boolean su);
 
-    Users findUserByFirstName(String firstName, boolean isDeleted);
+    Users findUserByFirstName(String firstName, boolean su);
 
-    Users findUserByLastName(String lastName, boolean isDeleted);
+    Users findUserByLastName(String lastName, boolean su);
 
     List<Users> getAllUsers(int pageNumber, int pageSize, boolean su);
 
-    Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criteria, boolean su);
+    Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias, boolean su);
 }

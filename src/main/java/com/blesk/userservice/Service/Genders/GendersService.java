@@ -12,7 +12,7 @@ public interface GendersService {
 
     Boolean deleteGender(Long genderId);
 
-    Boolean updateGender(Genders genders);
+    Boolean updateGender(Genders gender, Genders genders);
 
     Genders getGender(Long genderId);
 
@@ -20,5 +20,5 @@ public interface GendersService {
 
     List<Genders> getAllGenders(int pageNumber, int pageSize);
 
-    Map<String, Object> searchForGender(HashMap<String, HashMap<String, String>> criteria);
+    Map<String, Object> searchForGender(HashMap<String, HashMap<String, String>> criterias);
 }

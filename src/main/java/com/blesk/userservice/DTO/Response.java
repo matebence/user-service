@@ -59,14 +59,4 @@ public class Response {
     public void setNav(String name, String url) {
         this.nav.put(name, url);
     }
-
-    @Override
-    public String toString() {
-        return "Response{" +
-                "timestamp='" + timestamp + '\'' +
-                ", message='" + message + '\'' +
-                ", error=" + error +
-                ", nav=" + nav +
-                '}';
-    }
 }
