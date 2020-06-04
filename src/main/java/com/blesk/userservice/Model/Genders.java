@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ import java.sql.Timestamp;
 @Entity(name = "Genders")
 @Table(name = "genders", uniqueConstraints = {@UniqueConstraint(name = "gender_id", columnNames = "gender_id"), @UniqueConstraint(name = "gender_name", columnNames = "name")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, scope = Genders.class)
+@SQLDelete(sql = "UPDATE genders SET is_deleted = TRUE, deleted_at = NOW() WHERE gender_id = ?")
 public class Genders implements Serializable {
 
     @Id
@@ -28,6 +30,9 @@ public class Genders implements Serializable {
     @Size(min = 3, max = 20, message = Messages.GENDERS_NAME_SIZE)
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     private Timestamp createdAt;
@@ -42,8 +47,9 @@ public class Genders implements Serializable {
         this.name = name;
     }
 
-    public Genders(String name, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+    public Genders(String name, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
         this.name = name;
+        this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
@@ -68,6 +74,14 @@ public class Genders implements Serializable {
         this.name = name;
     }
 
+    public Boolean getDeleted() {
+        return this.isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
     public Timestamp getCreatedAt() {
         return this.createdAt;
     }
@@ -90,5 +104,16 @@ public class Genders implements Serializable {
 
     public void setDeletedAt(Timestamp deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    @PrePersist
+    protected void prePersist() {
+        this.isDeleted = false;
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void preUpdate() {
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
     }
 }

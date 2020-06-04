@@ -32,8 +32,8 @@ public class PlacesServiceImpl implements PlacesService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Boolean deletePlace(Long placeId) {
-        return this.placesDAO.delete("places", "place_id", placeId);
+    public Boolean deletePlace(Places places) {
+        return this.placesDAO.delete(places);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class PlacesServiceImpl implements PlacesService {
     @Transactional
     @Lock(value = LockModeType.READ)
     public Places getPlace(Long placeId) {
-        return this.placesDAO.get(Places.class, placeId);
+        return this.placesDAO.get(Places.class, "placeId", placeId);
     }
 }

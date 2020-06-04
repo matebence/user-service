@@ -31,12 +31,8 @@ public class UsersServiceImpl implements UsersService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Boolean deleteUser(Users users, boolean su) {
-        if (su) {
-            return this.usersDAO.delete("users", "account_id", users.getAccountId());
-        } else {
-            return this.usersDAO.softDelete(users);
-        }
+    public Boolean deleteUser(Users users) {
+        return this.usersDAO.delete(users);
     }
 
     @Override
@@ -64,55 +60,35 @@ public class UsersServiceImpl implements UsersService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Users getUser(Long accountId, boolean su) {
-        if (su) {
-            return this.usersDAO.getItemByColumn(Users.class, "accountId", accountId.toString());
-        } else {
-            return this.usersDAO.getItemByColumn("accountId", accountId.toString());
-        }
+    public Users getUser(Long accountId) {
+        return this.usersDAO.get(Users.class, "accountId", accountId);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Users findUserByFirstName(String firstName, boolean su) {
-        if (su) {
-            return this.usersDAO.getItemByColumn(Users.class, "firstName", firstName);
-        } else{
-            return this.usersDAO.getItemByColumn("firstName", firstName);
-        }
+    public Users findUserByFirstName(String firstName) {
+        return this.usersDAO.getItemByColumn(Users.class, "firstName", firstName);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Users findUserByLastName(String lastName, boolean su) {
-        if (su) {
-            return this.usersDAO.getItemByColumn(Users.class, "lastName", lastName);
-        } else{
-            return this.usersDAO.getItemByColumn("lastName", lastName);
-        }
+    public Users findUserByLastName(String lastName) {
+        return this.usersDAO.getItemByColumn(Users.class, "lastName", lastName);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public List<Users> getAllUsers(int pageNumber, int pageSize, boolean su) {
-        if (su) {
-            return this.usersDAO.getAll(Users.class, pageNumber, pageSize);
-        } else {
-            return this.usersDAO.getAll(pageNumber, pageSize);
-        }
+    public List<Users> getAllUsers(int pageNumber, int pageSize) {
+        return this.usersDAO.getAll(Users.class, pageNumber, pageSize);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias, boolean su) {
-        if (su) {
-            return this.usersDAO.searchBy(Users.class, criterias);
-        } else {
-            return this.usersDAO.searchBy(criterias);
-        }
+    public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias) {
+        return this.usersDAO.searchBy(Users.class,criterias);
     }
 }

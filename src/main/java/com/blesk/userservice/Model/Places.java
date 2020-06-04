@@ -3,21 +3,22 @@ package com.blesk.userservice.Model;
 import com.blesk.userservice.Value.Messages;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @DynamicInsert
 @DynamicUpdate
 @Entity(name = "Places")
 @Table(name = "places", uniqueConstraints = {@UniqueConstraint(name = "place_id", columnNames = "place_id")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, scope = Places.class)
+@SQLDelete(sql = "UPDATE places SET is_deleted = TRUE, deleted_at = NOW() WHERE place_id = ?")
 public class Places implements Serializable {
 
     @Id
@@ -63,6 +64,33 @@ public class Places implements Serializable {
     @Size(min = 2, max = 2, message = Messages.PLACES_CODE_SIZE)
     @Column(name = "code", nullable = false)
     private String code;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
+
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private Timestamp createdAt;
+
+    @Column(name = "updated_at")
+    private Timestamp updatedAt;
+
+    @Column(name = "deleted_at", updatable = false)
+    private Timestamp deletedAt;
+
+    public Places(Users users, String country, String region, String district, String place, String street, Integer zip, String code, Boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, Timestamp deletedAt) {
+        this.users = users;
+        this.country = country;
+        this.region = region;
+        this.district = district;
+        this.place = place;
+        this.street = street;
+        this.zip = zip;
+        this.code = code;
+        this.isDeleted = isDeleted;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
+    }
 
     public Places(Users users, String country, String region, String district, String place, String street, Integer zip, String code) {
         this.users = users;
@@ -162,5 +190,48 @@ public class Places implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Boolean getDeleted() {
+        return this.isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
+    public Timestamp getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Timestamp getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public void setDeletedAt(Timestamp deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    @PrePersist
+    protected void prePersist() {
+        this.isDeleted = false;
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    protected void preUpdate() {
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
     }
 }

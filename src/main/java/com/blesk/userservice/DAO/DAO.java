@@ -10,13 +10,13 @@ public interface DAO<T> {
 
     Boolean update(T t);
 
-    Boolean delete(String entity, String IdColumn, Long id);
+    Boolean delete(T t);
 
-    T get(Class c, Long id);
+    T get(Class<T> c, String column, Long id);
 
-    List<T> getAll(Class c, int pageNumber, int pageSize);
+    List<T> getAll(Class<T> c, int pageNumber, int pageSize);
 
-    T getItemByColumn(Class c, String column, String value);
+    T getItemByColumn(Class<T> c, String column, String value);
 
-    Map<String, Object> searchBy(Class c, HashMap<String, HashMap<String, String>> criterias);
+    Map<String, Object> searchBy(Class<T> c, HashMap<String, HashMap<String, String>> criterias);
 }

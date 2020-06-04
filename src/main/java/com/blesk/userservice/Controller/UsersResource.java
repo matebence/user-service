@@ -53,16 +53,16 @@ public class UsersResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @DeleteMapping("/users/{accountId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteUsers(@PathVariable long accountId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("DELETE_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Users user = this.accountService.getUser(accountId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Users user = this.accountService.getUser(accountId);
         if (user == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.NOT_FOUND);
-        if (!this.accountService.deleteUser(user, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")))) throw new UserServiceException(Messages.DELETE_USER, HttpStatus.BAD_REQUEST);
+        if (!this.accountService.deleteUser(user)) throw new UserServiceException(Messages.DELETE_USER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -73,7 +73,7 @@ public class UsersResource {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Users user = this.accountService.getUser(userId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Users user = this.accountService.getUser(userId);
         if (user == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
 
         if (!this.accountService.updateUser(user, users)) throw new UserServiceException(Messages.UPDATE_USER, HttpStatus.BAD_REQUEST);
@@ -87,7 +87,7 @@ public class UsersResource {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
         if (!jwtMapper.getGrantedPrivileges().contains("VIEW_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        Users users = this.accountService.getUser(accountId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Users users = this.accountService.getUser(accountId);
         if (users == null) throw new UserServiceException(Messages.GET_USER, HttpStatus.BAD_REQUEST);
 
         EntityModel<Users> entityModel = new EntityModel<Users>(users);
@@ -101,9 +101,9 @@ public class UsersResource {
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Users>> retrieveAllUsers(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
-        List<Users> users = this.accountService.getAllUsers(pageNumber, pageSize, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        List<Users> users = this.accountService.getAllUsers(pageNumber, pageSize);
         if (users == null || users.isEmpty()) throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.BAD_REQUEST);
 
         CollectionModel<List<Users>> collectionModel = new CollectionModel(users);
@@ -118,10 +118,10 @@ public class UsersResource {
     public CollectionModel<List<Users>> searchForUsers(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_USERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         if (search.get(Keys.PAGINATION) == null) throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
 
-        Map<String, Object> users = this.accountService.searchForUser(search, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Map<String, Object> users = this.accountService.searchForUser(search);
         if (users == null || users.isEmpty()) throw new UserServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
         CollectionModel<List<Users>> collectionModel = new CollectionModel((List<Users>) users.get("results"));

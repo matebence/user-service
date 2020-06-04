@@ -32,8 +32,8 @@ public class GendersServiceImpl implements GendersService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Boolean deleteGender(Long genderId) {
-        return this.gendersDAO.delete("genders", "gender_id", genderId);
+    public Boolean deleteGender(Genders genders) {
+        return this.gendersDAO.delete(genders);
     }
 
     @Override
@@ -69,6 +69,6 @@ public class GendersServiceImpl implements GendersService {
     @Transactional
     @Lock(value = LockModeType.READ)
     public Genders getGender(Long genderId) {
-        return this.gendersDAO.get(Genders.class, genderId);
+        return this.gendersDAO.get(Genders.class, "genderId", genderId);
     }
 }

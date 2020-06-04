@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 @Entity(name = "Payments")
 @Table(name = "payments", uniqueConstraints = {@UniqueConstraint(name = "payment_id", columnNames = "payment_id"), @UniqueConstraint(name = "payment_credit_card", columnNames = "credit_card"), @UniqueConstraint(name = "payment_charge", columnNames = "charge"), @UniqueConstraint(name = "payment_refund", columnNames = "refund")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, scope = Payments.class)
-@SQLDelete(sql = "UPDATE users SET is_deleted = TRUE, deleted_at = NOW() WHERE user_id = ?")
+@SQLDelete(sql = "UPDATE payments SET is_deleted = TRUE, deleted_at = NOW() WHERE payment_id = ?")
 public class Payments implements Serializable {
 
     public enum Currency {

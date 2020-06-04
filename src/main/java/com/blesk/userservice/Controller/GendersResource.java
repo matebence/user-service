@@ -64,7 +64,7 @@ public class GendersResource {
 
         Genders gender = this.gendersService.getGender(genderId);
         if (gender == null) throw new UserServiceException(Messages.GET_GENDER, HttpStatus.NOT_FOUND);
-        if (!this.gendersService.deleteGender(genderId)) throw new UserServiceException(Messages.DELETE_GENDER, HttpStatus.BAD_REQUEST);
+        if (!this.gendersService.deleteGender(gender)) throw new UserServiceException(Messages.DELETE_GENDER, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
@@ -103,7 +103,7 @@ public class GendersResource {
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Genders>> retrieveAllGenders(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
 
         List<Genders> genders = this.gendersService.getAllGenders(pageNumber, pageSize);
         if (genders == null || genders.isEmpty()) throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.BAD_REQUEST);
@@ -120,7 +120,7 @@ public class GendersResource {
     public CollectionModel<List<Genders>> searchForGenders(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
 
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
+        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_GENDERS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         if (search.get(Keys.PAGINATION) == null) throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
 
         Map<String, Object> genders = this.gendersService.searchForGender(search);

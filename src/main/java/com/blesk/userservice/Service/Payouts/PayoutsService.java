@@ -8,17 +8,17 @@ import java.util.Map;
 
 public interface PayoutsService {
 
-    Payouts createPayout(Payouts payouts, boolean su);
+    Payouts createPayout(Payouts payouts);
 
-    Boolean deletePayout(Payouts payouts, boolean su);
+    Boolean deletePayout(Payouts payouts);
 
     Boolean updatePayout(Payouts payout, Payouts payouts);
 
-    Payouts getPayout(Long payoutId, boolean su);
+    Payouts getPayout(Long payoutId);
 
-    Payouts findPayoutByIban(String iban, boolean su);
+    Payouts findPayoutByIban(String iban);
 
-    List<Payouts> getAllPayouts(int pageNumber, int pageSize, boolean su);
+    List<Payouts> getAllPayouts(int pageNumber, int pageSize);
 
-    Map<String, Object> searchForPayout(HashMap<String, HashMap<String, String>> criterias, boolean su);
+    Map<String, Object> searchForPayout(HashMap<String, HashMap<String, String>> criterias);
 }

@@ -53,8 +53,8 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Payments createPayment(Payments payments, boolean su) throws StripeException {
-        Users users = this.accountService.getUser(payments.getUsers().getUserId(), su);
+    public Payments createPayment(Payments payments) throws StripeException {
+        Users users = this.accountService.getUser(payments.getUsers().getUserId());
 
         if (payments.getAmount() < 10) return null;
         Map<String, Object> creditCard = new HashMap<>();
@@ -88,7 +88,7 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Payments createRefund(Payments payments, boolean su) throws StripeException {
+    public Payments createRefund(Payments payments) throws StripeException {
         Payments payment = this.paymentsDAO.getItemByColumn(Payments.class, "charge", payments.getCharge());
 
         if (payment == null) return null;
@@ -101,7 +101,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         payment.setRefunded(refund.getStatus().equals("succeeded"));
 
         if ((!this.paymentsDAO.update(payment))) return new Payments();
-        Users users = this.accountService.getUser(payment.getUsers().getUserId(), su);
+        Users users = this.accountService.getUser(payment.getUsers().getUserId());
         this.emailsService.sendHtmlMesseage("Vrátenie platby", "refunds", new HashMap<>(), users);
         return payment;
     }
@@ -109,12 +109,8 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Boolean deletePayment(Payments payments, boolean su) {
-        if (su) {
-            return this.paymentsDAO.delete("payments", "payment_id", payments.getPaymentId());
-        } else {
-            return this.paymentsDAO.softDelete(payments);
-        }
+    public Boolean deletePayment(Payments payments) {
+        return this.paymentsDAO.delete(payments);
     }
 
     @Override
@@ -132,44 +128,28 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Payments getPayment(Long paymentId, boolean su) {
-        if (su) {
-            return this.paymentsDAO.getItemByColumn(Payments.class, "paymentId", paymentId.toString());
-        } else {
-            return this.paymentsDAO.getItemByColumn("paymentId", paymentId.toString());
-        }
+    public Payments getPayment(Long paymentId) {
+        return this.paymentsDAO.get(Payments.class, "paymentId", paymentId);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Payments findPaymentByCreditCard(String iban, boolean su) {
-        if (su) {
-            return this.paymentsDAO.getItemByColumn(Payments.class, "creditCard", iban);
-        } else {
-            return this.paymentsDAO.getItemByColumn("creditCard", iban);
-        }
+    public Payments findPaymentByCreditCard(String creditCard) {
+        return this.paymentsDAO.getItemByColumn(Payments.class, "creditCard", creditCard);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public List<Payments> getAllPayments(int pageNumber, int pageSize, boolean su) {
-        if (su) {
-            return this.paymentsDAO.getAll(Payments.class, pageNumber, pageSize);
-        } else {
-            return this.paymentsDAO.getAll(pageNumber, pageSize);
-        }
+    public List<Payments> getAllPayments(int pageNumber, int pageSize) {
+        return this.paymentsDAO.getAll(Payments.class, pageNumber, pageSize);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForPayment(HashMap<String, HashMap<String, String>> criterias, boolean su) {
-        if (su) {
-            return this.paymentsDAO.searchBy(Payments.class, criterias);
-        } else {
-            return this.paymentsDAO.searchBy(criterias);
-        }
+    public Map<String, Object> searchForPayment(HashMap<String, HashMap<String, String>> criterias) {
+        return this.paymentsDAO.searchBy(Payments.class, criterias);
     }
 }
