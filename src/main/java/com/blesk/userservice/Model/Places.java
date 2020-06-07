@@ -66,7 +66,7 @@ public class Places implements Serializable {
     private String code;
 
     @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     private Timestamp createdAt;
@@ -226,7 +226,6 @@ public class Places implements Serializable {
 
     @PrePersist
     protected void prePersist() {
-        this.isDeleted = false;
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
