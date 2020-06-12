@@ -6,7 +6,6 @@ import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConv
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.Map;
 
 @Component
@@ -42,9 +41,6 @@ public class JwtConverterImpl extends DefaultAccessTokenConverter implements Jwt
 
         if (map.get("activated") != null)
             jwtMapper.setActivated((Boolean) map.get("activated"));
-
-        if (map.get("privileges") != null)
-            jwtMapper.setGrantedPrivileges((Collection<String>) map.get("privileges"));
 
         oAuth2Authentication.setDetails(jwtMapper);
         return oAuth2Authentication;
