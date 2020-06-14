@@ -18,7 +18,7 @@ public class OAuthEntryPoint implements AuthenticationEntryPoint {
         Response errorObj = new Response(new Timestamp(System.currentTimeMillis()).toString(), Messages.AUTH_EXCEPTION,true);
 
         response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
         try {
             ObjectMapper mapper = new ObjectMapper();

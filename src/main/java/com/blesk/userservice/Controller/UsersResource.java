@@ -35,7 +35,7 @@ public class UsersResource {
         this.accountService = accountService;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Users> createUsers(@Valid @RequestBody Users users, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -47,7 +47,7 @@ public class UsersResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER')")
     @DeleteMapping("/users/{accountId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteUsers(@PathVariable long accountId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -57,7 +57,7 @@ public class UsersResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @PutMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateUsers(@Valid @RequestBody Users users, @PathVariable long userId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -68,7 +68,7 @@ public class UsersResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/users/{accountId}")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Users> retrieveUsers(@PathVariable long accountId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -81,7 +81,7 @@ public class UsersResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/users/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Users>> retrieveAllUsers(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -94,7 +94,7 @@ public class UsersResource {
         return collectionModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @PostMapping("/users/search")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<List<Users>> searchForUsers(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {

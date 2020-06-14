@@ -37,7 +37,7 @@ public class PayoutsResource {
         this.payoutsService = payoutsService;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @PostMapping("/payouts")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Payouts> createPayouts(@Valid @RequestBody Payouts payouts, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -49,7 +49,7 @@ public class PayoutsResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER')")
     @DeleteMapping("/payouts/{payoutId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deletePayouts(@PathVariable long payoutId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -59,7 +59,7 @@ public class PayoutsResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER')")
     @PutMapping("/payouts/{payoutId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updatePayouts(@Valid @RequestBody Payouts payouts, @PathVariable long payoutId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -70,7 +70,7 @@ public class PayoutsResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/payouts/{payoutId}")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Payouts> retrievePayouts(@PathVariable long payoutId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -83,7 +83,7 @@ public class PayoutsResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/payouts/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Payouts>> retrieveAllPayouts(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -96,7 +96,7 @@ public class PayoutsResource {
         return collectionModel;
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @PostMapping("/payouts/search")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<List<Payouts>> searchForPayouts(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
