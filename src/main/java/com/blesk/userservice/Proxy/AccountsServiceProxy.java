@@ -56,7 +56,7 @@ class AccountsServiceProxyFallback implements AccountsServiceProxy {
         Iterable<Accounts> caches = this.cachesService.getAllCache(ids);
         List<Users> users = new ArrayList<>();
         caches.forEach(cache -> {
-            users.add(new Users(true, cache.getAccountId(), cache.getUserName(), cache.getEmail()));
+            users.add(new Users(true, Long.parseLong(cache.getAccountId()), cache.getUserName(), cache.getEmail()));
         });
 
         if (users.isEmpty()) throw new UserServiceException(Messages.SERVER_EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR);

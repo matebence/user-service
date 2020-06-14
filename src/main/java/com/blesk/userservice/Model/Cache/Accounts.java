@@ -8,13 +8,13 @@ import java.io.Serializable;
 @RedisHash("Accounts")
 public class Accounts implements Serializable {
 
-    @Id private Long accountId;
+    @Id private String accountId;
 
     private String userName;
 
     private String email;
 
-    public Accounts(Long accountId, String userName, String email) {
+    public Accounts(String accountId, String userName, String email) {
         this.accountId = accountId;
         this.userName = userName;
         this.email = email;
@@ -28,11 +28,11 @@ public class Accounts implements Serializable {
     public Accounts() {
     }
 
-    public Long getAccountId() {
+    public String getAccountId() {
         return this.accountId;
     }
 
-    public void setAccountId(Long accountId) {
+    public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
 

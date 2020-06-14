@@ -112,7 +112,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
             if (user.getCached()) break;
 
             Accounts account = new Accounts();
-            account.setAccountId(user.getAccountId());
+            account.setAccountId(user.getAccountId().toString());
             account.setEmail(user.getEmail());
             account.setUserName(user.getUserName());
             accounts.add(account);
