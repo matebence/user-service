@@ -40,8 +40,7 @@ public class CacheServiceImpl implements CacheService {
         List<Accounts> result = new ArrayList<>();
         try {
             for (Accounts account : accounts) {
-                account.setAccountId(DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(String.format("accounts-%s", account.getAccountId()).getBytes("UTF-8"))));
-                System.out.println(account.getAccountId());
+                account.setAccountId(DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(String.format("accounts-%s", account.getAccountId()).getBytes("UTF-8"))).toLowerCase());
                 result.add(this.accountsCrudRepository.save(account));
             }
         } catch (DataAccessException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
@@ -49,7 +48,6 @@ public class CacheServiceImpl implements CacheService {
         }
         return result;
     }
-
 
     @Override
     @Transactional

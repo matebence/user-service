@@ -37,6 +37,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     @Lock(value = LockModeType.READ)
     public Users getUser(Long accountId) {
         Users users = this.usersDAO.getItemByColumn(Users.class, "accountId", accountId.toString());
+        if (users == null) return null;
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Collections.singletonList(users.getAccountId()));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         return this.performJoin(Collections.singletonList(users), accountDetails).iterator().next();
@@ -47,6 +48,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     @Lock(value = LockModeType.READ)
     public List<Users> getAllUsers(int pageNumber, int pageSize) {
         List<Users> users = this.usersDAO.getAll(Users.class, pageNumber, pageSize);
+        if (users == null) return null;
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", users.stream().map(Users::getAccountId).collect(Collectors.toList()));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         return this.performJoin(users, accountDetails);
@@ -57,6 +59,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias) {
         Map<String, Object> users = this.usersDAO.searchBy(Users.class, criterias);
+        if (users == null) return null;
         List<Users> user = (List<Users>) users.get("results");
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", user.stream().map(Users::getAccountId).collect(Collectors.toList()));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
