@@ -149,6 +149,13 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
+    public List<Payments> getPaymentsForJoin(List<Long> ids, String columName) {
+        return this.paymentsDAO.getJoinValuesByColumn(Payments.class, ids, columName);
+    }
+
+    @Override
+    @Transactional
+    @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForPayment(HashMap<String, HashMap<String, String>> criterias) {
         return this.paymentsDAO.searchBy(Payments.class, criterias);
     }

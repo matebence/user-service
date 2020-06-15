@@ -121,4 +121,13 @@ public class PaymentsResource {
         if ((boolean) payments.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForPayments(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
     }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/payments/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<List<Payments>> joinPayments(@PathVariable String columName, @RequestBody List<Long> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Payments> payments = this.paymentsService.getPaymentsForJoin(ids, columName);
+        if (payments == null || payments.isEmpty()) throw new UserServiceException(Messages.GET_ALL_PAYMENTS, HttpStatus.BAD_REQUEST);
+        return new CollectionModel(payments);
+    }
 }

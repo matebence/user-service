@@ -22,5 +22,7 @@ public interface UsersService {
 
     List<Users> getAllUsers(int pageNumber, int pageSize);
 
+    List<Users> getUsersForJoin(List<Long> ids, String columName);
+
     Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias);
 }

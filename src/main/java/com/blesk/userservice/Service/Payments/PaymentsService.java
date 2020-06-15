@@ -23,5 +23,7 @@ public interface PaymentsService {
 
     List<Payments> getAllPayments(int pageNumber, int pageSize);
 
+    List<Payments> getPaymentsForJoin(List<Long> ids, String columName);
+
     Map<String, Object> searchForPayment(HashMap<String, HashMap<String, String>> criterias);
 }

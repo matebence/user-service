@@ -111,4 +111,13 @@ public class PayoutsResource {
         if ((boolean) payouts.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForPayouts(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
     }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/payouts/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<List<Payouts>> joinPayouts(@PathVariable String columName, @RequestBody List<Long> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Payouts> payouts = this.payoutsService.getPayoutsForJoin(ids, columName);
+        if (payouts == null || payouts.isEmpty()) throw new UserServiceException(Messages.GET_ALL_PAYOUTS, HttpStatus.BAD_REQUEST);
+        return new CollectionModel(payouts);
+    }
 }

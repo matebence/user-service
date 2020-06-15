@@ -61,6 +61,13 @@ public class GendersServiceImpl implements GendersService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
+    public List<Genders> getGendersForJoin(List<Long> ids, String columName) {
+        return this.gendersDAO.getJoinValuesByColumn(Genders.class, ids, columName);
+    }
+
+    @Override
+    @Transactional
+    @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForGender(HashMap<String, HashMap<String, String>> criterias) {
         return this.gendersDAO.searchBy(Genders.class, criterias);
     }

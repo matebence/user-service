@@ -88,6 +88,13 @@ public class UsersServiceImpl implements UsersService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
+    public List<Users> getUsersForJoin(List<Long> ids, String columName) {
+        return this.usersDAO.getJoinValuesByColumn(Users.class, ids, columName);
+    }
+
+    @Override
+    @Transactional
+    @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias) {
         return this.usersDAO.searchBy(Users.class,criterias);
     }

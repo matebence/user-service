@@ -109,4 +109,13 @@ public class UsersResource {
         if ((boolean) users.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForUsers(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
     }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/users/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<List<Users>> joinUsers(@PathVariable String columName, @RequestBody List<Long> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Users> users = this.accountService.getUsersForJoin(ids, columName);
+        if (users == null || users.isEmpty()) throw new UserServiceException(Messages.GET_ALL_USERS, HttpStatus.BAD_REQUEST);
+        return new CollectionModel(users);
+    }
 }

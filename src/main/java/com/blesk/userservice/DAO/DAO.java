@@ -18,5 +18,7 @@ public interface DAO<T> {
 
     T getItemByColumn(Class<T> c, String column, String value);
 
+    List<T> getJoinValuesByColumn(Class<T> c, List<Long> ids, String columName);
+
     Map<String, Object> searchBy(Class<T> c, HashMap<String, HashMap<String, String>> criterias);
 }

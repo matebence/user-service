@@ -111,4 +111,13 @@ public class GendersResource {
         if ((boolean) genders.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForGenders(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
     }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/genders/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<List<Genders>> joinGenders(@PathVariable String columName, @RequestBody List<Long> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Genders> genders = this.gendersService.getGendersForJoin(ids, columName);
+        if (genders == null || genders.isEmpty()) throw new UserServiceException(Messages.GET_ALL_GENDERS, HttpStatus.BAD_REQUEST);
+        return new CollectionModel(genders);
+    }
 }

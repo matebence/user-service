@@ -68,6 +68,11 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     }
 
     @Override
+    public List<Users> getUsersForJoin(List<Long> ids, String columName) {
+        return super.getUsersForJoin(ids, columName);
+    }
+
+    @Override
     public Users findUserByFirstName(String firstName) {
         return super.findUserByFirstName(firstName);
     }

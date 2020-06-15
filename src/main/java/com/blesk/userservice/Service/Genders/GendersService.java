@@ -20,5 +20,7 @@ public interface GendersService {
 
     List<Genders> getAllGenders(int pageNumber, int pageSize);
 
+    List<Genders> getGendersForJoin(List<Long> ids, String columName);
+
     Map<String, Object> searchForGender(HashMap<String, HashMap<String, String>> criterias);
 }

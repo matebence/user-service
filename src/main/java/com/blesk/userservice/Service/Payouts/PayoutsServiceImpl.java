@@ -106,6 +106,13 @@ public class PayoutsServiceImpl implements PayoutsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
+    public List<Payouts> getPayoutsForJoin(List<Long> ids, String columName) {
+        return this.payoutsDAO.getJoinValuesByColumn(Payouts.class, ids, columName);
+    }
+
+    @Override
+    @Transactional
+    @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForPayout(HashMap<String, HashMap<String, String>> criterias) {
         return this.payoutsDAO.searchBy(Payouts.class, criterias);
     }

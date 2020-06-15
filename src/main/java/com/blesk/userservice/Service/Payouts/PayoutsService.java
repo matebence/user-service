@@ -20,5 +20,7 @@ public interface PayoutsService {
 
     List<Payouts> getAllPayouts(int pageNumber, int pageSize);
 
+    List<Payouts> getPayoutsForJoin(List<Long> ids, String columName);
+
     Map<String, Object> searchForPayout(HashMap<String, HashMap<String, String>> criterias);
 }
