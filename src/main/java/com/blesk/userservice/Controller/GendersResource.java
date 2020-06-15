@@ -37,7 +37,7 @@ public class GendersResource {
         this.gendersService = gendersService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
     @PostMapping("/genders")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Genders> createGenders(@Valid @RequestBody Genders genders, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -49,7 +49,7 @@ public class GendersResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
     @DeleteMapping("/genders/{genderId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteGenders(@PathVariable long genderId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -59,7 +59,7 @@ public class GendersResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
     @PutMapping("/genders/{genderId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateGenders(@Valid @RequestBody Genders genders, @PathVariable long genderId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -70,7 +70,7 @@ public class GendersResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/genders/{genderId}")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Genders> retrieveGenders(@PathVariable long genderId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -83,7 +83,7 @@ public class GendersResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT') || hasRole('COURIER')")
     @GetMapping("/genders/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Genders>> retrieveAllGenders(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -96,7 +96,7 @@ public class GendersResource {
         return collectionModel;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN')")
     @PostMapping("/genders/search")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<List<Genders>> searchForGenders(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {

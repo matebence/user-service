@@ -38,7 +38,7 @@ public class PaymentsResource {
         this.paymentsService = paymentsService;
     }
 
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
     @PostMapping("/payments")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Payments> createPayments(@Valid @RequestBody Payments payments, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws StripeException {
@@ -50,7 +50,7 @@ public class PaymentsResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @PostMapping("/refunds")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Payments> createRefunds(@Valid @RequestBody Payments payments, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws StripeException {
@@ -59,7 +59,7 @@ public class PaymentsResource {
         return new EntityModel<Payments>(payment);
     }
 
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @DeleteMapping("/payments/{paymentId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deletePayments(@PathVariable long paymentId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -69,7 +69,7 @@ public class PaymentsResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @PutMapping("/payments/{paymentId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updatePayments(@Valid @RequestBody Payments payments, @PathVariable long paymentId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -80,7 +80,7 @@ public class PaymentsResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
     @GetMapping("/payments/{paymentId}")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Payments> retrievePayments(@PathVariable long paymentId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -93,7 +93,7 @@ public class PaymentsResource {
         return entityModel;
     }
 
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
     @GetMapping("/payments/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Payments>> retrieveAllPayments(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -106,7 +106,7 @@ public class PaymentsResource {
         return collectionModel;
     }
 
-    @PreAuthorize("hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
     @PostMapping("/payments/search")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<List<Payments>> searchForPayments(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
