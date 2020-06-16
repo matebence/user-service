@@ -159,6 +159,12 @@ public class DAOImpl<T> implements DAO<T> {
             if (criterias.get(Keys.SEARCH) != null) {
                 for (Object o : criterias.get(Keys.SEARCH).entrySet()) {
                     Map.Entry pair = (Map.Entry) o;
+                    try{
+                        predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get(pair.getKey().toString())), Integer.parseInt(pair.getValue().toString())));
+                    }catch(NumberFormatException ignored){}
+                    try{
+                        predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get(pair.getKey().toString())), Float.parseFloat(pair.getValue().toString())));
+                    }catch(NumberFormatException ignored){}
                     predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(pair.getKey().toString())), "%" + pair.getValue().toString().toLowerCase() + "%"));
                 }
                 select.where(predicates.toArray(new Predicate[]{}));
