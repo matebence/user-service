@@ -68,8 +68,14 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     }
 
     @Override
+    @Transactional
+    @Lock(value = LockModeType.READ)
     public List<Users> getUsersForJoin(List<Long> ids, String columName) {
-        return super.getUsersForJoin(ids, columName);
+        List<Users> users = this.usersDAO.getJoinValuesByColumn(Users.class, ids, columName);
+        if (users == null) return null;
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", users.stream().map(Users::getAccountId).collect(Collectors.toList()));
+        this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
+        return this.performJoin(users, accountDetails);
     }
 
     @Override
