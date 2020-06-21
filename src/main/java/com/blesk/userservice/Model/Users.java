@@ -54,11 +54,11 @@ public class Users implements Serializable {
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER, mappedBy = "users")
     private Places places;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "users")
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "users")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Payments> payments = new HashSet<Payments>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "users")
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "users")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Payouts> payouts = new HashSet<Payouts>();
 

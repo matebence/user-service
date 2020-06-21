@@ -69,7 +69,7 @@ public class DAOImpl<T> implements DAO<T> {
         Root<T> root = criteriaQuery.from(c);
 
         try {
-            return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get("column"), id), criteriaBuilder.equal(root.get("isDeleted"), false)))).getSingleResult();
+            return session.createQuery(criteriaQuery.where(criteriaBuilder.and(criteriaBuilder.equal(root.get(column), id), criteriaBuilder.equal(root.get("isDeleted"), false)))).getSingleResult();
         } catch (Exception ex) {
             session.clear();
             session.close();
@@ -159,12 +159,6 @@ public class DAOImpl<T> implements DAO<T> {
             if (criterias.get(Keys.SEARCH) != null) {
                 for (Object o : criterias.get(Keys.SEARCH).entrySet()) {
                     Map.Entry pair = (Map.Entry) o;
-                    try{
-                        predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get(pair.getKey().toString())), Integer.parseInt(pair.getValue().toString())));
-                    }catch(NumberFormatException ignored){}
-                    try{
-                        predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get(pair.getKey().toString())), Float.parseFloat(pair.getValue().toString())));
-                    }catch(NumberFormatException ignored){}
                     predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(pair.getKey().toString())), "%" + pair.getValue().toString().toLowerCase() + "%"));
                 }
                 select.where(predicates.toArray(new Predicate[]{}));

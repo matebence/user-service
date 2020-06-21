@@ -108,11 +108,15 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
             Iterator<Users> usersIterator = users.iterator();
             Iterator<Users> accountDetailsIterator = accountDetails.iterator();
 
-            while (usersIterator.hasNext() && accountDetailsIterator.hasNext()) {
+            while (usersIterator.hasNext()) {
                 Users usersIteratorValue = usersIterator.next();
-                Users accountDetailsIteratorValue = accountDetailsIterator.next();
-                usersIteratorValue.setUserName(accountDetailsIteratorValue.getUserName());
-                usersIteratorValue.setEmail(accountDetailsIteratorValue.getEmail());
+                while (accountDetailsIterator.hasNext()) {
+                    Users accountDetailsIteratorValue = accountDetailsIterator.next();
+                    if(usersIteratorValue.getAccountId().equals(accountDetailsIteratorValue.getAccountId())){
+                        usersIteratorValue.setUserName(accountDetailsIteratorValue.getUserName());
+                        usersIteratorValue.setEmail(accountDetailsIteratorValue.getEmail());
+                    }
+                }
             }
             return users;
         } else {
