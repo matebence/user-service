@@ -10,7 +10,7 @@ public interface GendersService {
 
     Genders createGender(Genders genders);
 
-    Boolean deleteGender(Long genderId);
+    Boolean deleteGender(Genders genders);
 
     Boolean updateGender(Genders gender, Genders genders);
 
@@ -19,6 +19,8 @@ public interface GendersService {
     Genders findGenderByName(String name);
 
     List<Genders> getAllGenders(int pageNumber, int pageSize);
+
+    List<Genders> getGendersForJoin(List<Long> ids, String columName);
 
     Map<String, Object> searchForGender(HashMap<String, HashMap<String, String>> criterias);
 }

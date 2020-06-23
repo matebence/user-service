@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.CharStreams;
 import feign.RequestTemplate;
 import feign.codec.ErrorDecoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,9 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class FeignClientImpl implements FeignClient, ErrorDecoder {
 
+    @Value("${blesk.server-key}")
+    private String serverKey;
+
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String TOKEN_TYPE = "Bearer";
 
@@ -26,8 +30,12 @@ public class FeignClientImpl implements FeignClient, ErrorDecoder {
     public void apply(RequestTemplate requestTemplate) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getDetails() instanceof OAuth2AuthenticationDetails) {
-            OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-            requestTemplate.header(AUTHORIZATION_HEADER, String.format("%s %s", TOKEN_TYPE, details.getTokenValue()));
+            if (requestTemplate.path().equals("/api/accounts/join/accountId")) {
+                requestTemplate.header(AUTHORIZATION_HEADER, String.format("%s %s", TOKEN_TYPE, serverKey));
+            } else {
+                OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+                requestTemplate.header(AUTHORIZATION_HEADER, String.format("%s %s", TOKEN_TYPE, details.getTokenValue()));
+            }
         }
     }
 

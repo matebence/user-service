@@ -32,8 +32,8 @@ public class GendersServiceImpl implements GendersService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Boolean deleteGender(Long genderId) {
-        return this.gendersDAO.delete("genders", "gender_id", genderId);
+    public Boolean deleteGender(Genders genders) {
+        return this.gendersDAO.delete(genders);
     }
 
     @Override
@@ -61,6 +61,13 @@ public class GendersServiceImpl implements GendersService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
+    public List<Genders> getGendersForJoin(List<Long> ids, String columName) {
+        return this.gendersDAO.getJoinValuesByColumn(Genders.class, ids, columName);
+    }
+
+    @Override
+    @Transactional
+    @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForGender(HashMap<String, HashMap<String, String>> criterias) {
         return this.gendersDAO.searchBy(Genders.class, criterias);
     }
@@ -69,6 +76,6 @@ public class GendersServiceImpl implements GendersService {
     @Transactional
     @Lock(value = LockModeType.READ)
     public Genders getGender(Long genderId) {
-        return this.gendersDAO.get(Genders.class, genderId);
+        return this.gendersDAO.get(Genders.class, "genderId", genderId);
     }
 }

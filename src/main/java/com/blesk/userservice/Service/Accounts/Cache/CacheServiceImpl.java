@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.LockModeType;
+import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,14 +40,14 @@ public class CacheServiceImpl implements CacheService {
         List<Accounts> result = new ArrayList<>();
         try {
             for (Accounts account : accounts) {
+                account.setAccountId(DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(String.format("accounts-%s", account.getAccountId()).getBytes("UTF-8"))).toLowerCase());
                 result.add(this.accountsCrudRepository.save(account));
             }
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
             this.logger.info(Messages.CREATE_CACHE);
         }
         return result;
     }
-
 
     @Override
     @Transactional
@@ -53,7 +57,7 @@ public class CacheServiceImpl implements CacheService {
             Iterable<Accounts> accounts = this.accountsCrudRepository.findAllById(ids);
             if (accounts == null) this.logger.info(Messages.NOT_FOUND_CACHE);
             return accounts;
-        }catch (DataAccessException ex){
+        } catch (DataAccessException ex) {
             this.logger.info(Messages.FIND_CACHE);
         }
         return Collections.emptyList();

@@ -1,6 +1,5 @@
 package com.blesk.userservice.Controller;
 
-import com.blesk.userservice.DTO.JwtMapper;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Model.Payments;
 import com.blesk.userservice.Service.Payments.PaymentsServiceImpl;
@@ -13,8 +12,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,10 +42,7 @@ public class PaymentsResource {
     @PostMapping("/payments")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Payments> createPayments(@Valid @RequestBody Payments payments, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws StripeException {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_PAYMENTS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
-        Payments payment = this.paymentsService.createPayment(payments, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Payments payment = this.paymentsService.createPayment(payments);
         if ((payment == null) || (payment.getPaymentId() == null)) throw new UserServiceException(Messages.CREATE_PAYMENT, HttpStatus.BAD_REQUEST);
 
         EntityModel<Payments> entityModel = new EntityModel<Payments>(payment);
@@ -60,35 +54,26 @@ public class PaymentsResource {
     @PostMapping("/refunds")
     @ResponseStatus(HttpStatus.CREATED)
     public EntityModel<Payments> createRefunds(@Valid @RequestBody Payments payments, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws StripeException {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("CREATE_REFUNDS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
-        Payments payment = this.paymentsService.createRefund(payments, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Payments payment = this.paymentsService.createRefund(payments);
         if ((payment == null) || (!payment.getRefunded())) throw new UserServiceException(Messages.CREATE_REFUND, HttpStatus.BAD_REQUEST);
         return new EntityModel<Payments>(payment);
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @DeleteMapping("/payments/{paymentId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deletePayments(@PathVariable long paymentId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("DELETE_PAYMENTS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
-        Payments payment = this.paymentsService.getPayment(paymentId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Payments payment = this.paymentsService.getPayment(paymentId);
         if (payment == null) throw new UserServiceException(Messages.GET_PAYMENT, HttpStatus.NOT_FOUND);
-        if (!this.paymentsService.deletePayment(payment, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")))) throw new UserServiceException(Messages.DELETE_PAYMENT, HttpStatus.BAD_REQUEST);
+        if (!this.paymentsService.deletePayment(payment)) throw new UserServiceException(Messages.DELETE_PAYMENT, HttpStatus.BAD_REQUEST);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER') || hasRole('CLIENT')")
+    @PreAuthorize("hasRole('SYSTEM') || hasRole('ADMIN') || hasRole('MANAGER')")
     @PutMapping("/payments/{paymentId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updatePayments(@Valid @RequestBody Payments payments, @PathVariable long paymentId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("UPDATE_PAYMENTS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
-        Payments payment = this.paymentsService.getPayment(paymentId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Payments payment = this.paymentsService.getPayment(paymentId);
         if (payment == null) throw new UserServiceException(Messages.GET_PAYMENT, HttpStatus.BAD_REQUEST);
 
         if (!this.paymentsService.updatePayment(payment, payments)) throw new UserServiceException(Messages.UPDATE_PAYMENT, HttpStatus.BAD_REQUEST);
@@ -99,10 +84,7 @@ public class PaymentsResource {
     @GetMapping("/payments/{paymentId}")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Payments> retrievePayments(@PathVariable long paymentId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_PAYMENTS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
-        Payments payments = this.paymentsService.getPayment(paymentId, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Payments payments = this.paymentsService.getPayment(paymentId);
         if (payments == null) throw new UserServiceException(Messages.GET_PAYMENT, HttpStatus.BAD_REQUEST);
 
         EntityModel<Payments> entityModel = new EntityModel<Payments>(payments);
@@ -115,10 +97,7 @@ public class PaymentsResource {
     @GetMapping("/payments/page/{pageNumber}/limit/{pageSize}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public CollectionModel<List<Payments>> retrieveAllPayments(@PathVariable int pageNumber, @PathVariable int pageSize, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_PAYMENTS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
-
-        List<Payments> payments = this.paymentsService.getAllPayments(pageNumber, pageSize, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        List<Payments> payments = this.paymentsService.getAllPayments(pageNumber, pageSize);
         if (payments == null || payments.isEmpty()) throw new UserServiceException(Messages.GET_ALL_PAYMENTS, HttpStatus.BAD_REQUEST);
 
         CollectionModel<List<Payments>> collectionModel = new CollectionModel(payments);
@@ -131,12 +110,8 @@ public class PaymentsResource {
     @PostMapping("/payments/search")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<List<Payments>> searchForPayments(@RequestBody HashMap<String, HashMap<String, String>> search, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        JwtMapper jwtMapper = (JwtMapper) ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getDecodedDetails();
-
-        if (!jwtMapper.getGrantedPrivileges().contains("VIEW_ALL_PAYMENTS")) throw new UserServiceException(Messages.AUTH_EXCEPTION, HttpStatus.UNAUTHORIZED);
         if (search.get(Keys.PAGINATION) == null) throw new UserServiceException(Messages.PAGINATION_ERROR, HttpStatus.BAD_REQUEST);
-
-        Map<String, Object> payments = this.paymentsService.searchForPayment(search, (httpServletRequest.isUserInRole("SYSTEM") || httpServletRequest.isUserInRole("ADMIN")));
+        Map<String, Object> payments = this.paymentsService.searchForPayment(search);
         if (payments == null || payments.isEmpty()) throw new UserServiceException(Messages.SEARCH_ERROR, HttpStatus.BAD_REQUEST);
 
         CollectionModel<List<Payments>> collectionModel = new CollectionModel((List<Payments>) payments.get("results"));
@@ -145,5 +120,14 @@ public class PaymentsResource {
         if ((boolean) payments.get("hasPrev")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForPayments(search, httpServletRequest, httpServletResponse)).withRel("hasPrev"));
         if ((boolean) payments.get("hasNext")) collectionModel.add(linkTo(methodOn(this.getClass()).searchForPayments(search, httpServletRequest, httpServletResponse)).withRel("hasNext"));
         return collectionModel;
+    }
+
+    @PreAuthorize("hasRole('SYSTEM')")
+    @PostMapping("/payments/join/{columName}")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<List<Payments>> joinPayments(@PathVariable String columName, @RequestBody List<Long> ids, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        List<Payments> payments = this.paymentsService.getPaymentsForJoin(ids, columName);
+        if (payments == null || payments.isEmpty()) throw new UserServiceException(Messages.GET_ALL_PAYMENTS, HttpStatus.BAD_REQUEST);
+        return new CollectionModel(payments);
     }
 }

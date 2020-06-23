@@ -35,13 +35,9 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Users getUser(Long accountId, boolean su) {
-        Users users;
-        if (su) {
-            users = this.usersDAO.getItemByColumn(Users.class, "accountId", accountId.toString());
-        } else {
-            users =  this.usersDAO.getItemByColumn("accountId", accountId.toString());
-        }
+    public Users getUser(Long accountId) {
+        Users users = this.usersDAO.getItemByColumn(Users.class, "accountId", accountId.toString());
+        if (users == null) return null;
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Collections.singletonList(users.getAccountId()));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         return this.performJoin(Collections.singletonList(users), accountDetails).iterator().next();
@@ -50,13 +46,9 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public List<Users> getAllUsers(int pageNumber, int pageSize, boolean su) {
-        List<Users> users;
-        if (su) {
-            users = this.usersDAO.getAll(Users.class, pageNumber, pageSize);
-        } else {
-            users = this.usersDAO.getAll(pageNumber, pageSize);
-        }
+    public List<Users> getAllUsers(int pageNumber, int pageSize) {
+        List<Users> users = this.usersDAO.getAll(Users.class, pageNumber, pageSize);
+        if (users == null) return null;
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", users.stream().map(Users::getAccountId).collect(Collectors.toList()));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         return this.performJoin(users, accountDetails);
@@ -65,13 +57,9 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias, boolean su) {
-        Map<String, Object> users;
-        if (su) {
-            users = this.usersDAO.searchBy(Users.class, criterias);
-        } else {
-            users = this.usersDAO.searchBy(criterias);
-        }
+    public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias) {
+        Map<String, Object> users = this.usersDAO.searchBy(Users.class, criterias);
+        if (users == null) return null;
         List<Users> user = (List<Users>) users.get("results");
         CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", user.stream().map(Users::getAccountId).collect(Collectors.toList()));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
@@ -80,13 +68,24 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     }
 
     @Override
-    public Users findUserByFirstName(String firstName, boolean su) {
-        return super.findUserByFirstName(firstName, su);
+    @Transactional
+    @Lock(value = LockModeType.READ)
+    public List<Users> getUsersForJoin(List<Long> ids, String columName) {
+        List<Users> users = this.usersDAO.getJoinValuesByColumn(Users.class, ids, columName);
+        if (users == null) return null;
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", users.stream().map(Users::getAccountId).collect(Collectors.toList()));
+        this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
+        return this.performJoin(users, accountDetails);
     }
 
     @Override
-    public Users findUserByLastName(String lastName, boolean su) {
-        return super.findUserByLastName(lastName, su);
+    public Users findUserByFirstName(String firstName) {
+        return super.findUserByFirstName(firstName);
+    }
+
+    @Override
+    public Users findUserByLastName(String lastName) {
+        return super.findUserByLastName(lastName);
     }
 
     @Override
@@ -95,8 +94,8 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     }
 
     @Override
-    public Boolean deleteUser(Users users, boolean su) {
-        return super.deleteUser(users , su);
+    public Boolean deleteUser(Users users) {
+        return super.deleteUser(users);
     }
 
     @Override
@@ -109,11 +108,15 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
             Iterator<Users> usersIterator = users.iterator();
             Iterator<Users> accountDetailsIterator = accountDetails.iterator();
 
-            while (usersIterator.hasNext() && accountDetailsIterator.hasNext()) {
+            while (usersIterator.hasNext()) {
                 Users usersIteratorValue = usersIterator.next();
-                Users accountDetailsIteratorValue = accountDetailsIterator.next();
-                usersIteratorValue.setUserName(accountDetailsIteratorValue.getUserName());
-                usersIteratorValue.setEmail(accountDetailsIteratorValue.getEmail());
+                while (accountDetailsIterator.hasNext()) {
+                    Users accountDetailsIteratorValue = accountDetailsIterator.next();
+                    if(usersIteratorValue.getAccountId().equals(accountDetailsIteratorValue.getAccountId())){
+                        usersIteratorValue.setUserName(accountDetailsIteratorValue.getUserName());
+                        usersIteratorValue.setEmail(accountDetailsIteratorValue.getEmail());
+                    }
+                }
             }
             return users;
         } else {
@@ -127,7 +130,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
             if (user.getCached()) break;
 
             Accounts account = new Accounts();
-            account.setAccountId(user.getAccountId());
+            account.setAccountId(user.getAccountId().toString());
             account.setEmail(user.getEmail());
             account.setUserName(user.getUserName());
             accounts.add(account);

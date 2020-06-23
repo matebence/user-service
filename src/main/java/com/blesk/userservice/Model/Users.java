@@ -54,11 +54,11 @@ public class Users implements Serializable {
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER, mappedBy = "users")
     private Places places;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "users")
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "users")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Payments> payments = new HashSet<Payments>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "users")
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "users")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Payouts> payouts = new HashSet<Payouts>();
 
@@ -80,7 +80,7 @@ public class Users implements Serializable {
 
     @Range(min = 0, max = 99999, message = Messages.USERS_BALANCE_RANGE)
     @Column(name = "balance", nullable = false)
-    private Double balance;
+    private Double balance = 0.00;
 
     @NotNull(message = Messages.USERS_TEL_NOT_NULL)
     @Size(min = 9, max = 15, message = Messages.USERS_TEL_SIZE)
@@ -92,7 +92,7 @@ public class Users implements Serializable {
     private String img;
 
     @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     private Timestamp createdAt;
@@ -321,8 +321,6 @@ public class Users implements Serializable {
 
     @PrePersist
     protected void prePersist() {
-        this.balance = 0.00;
-        this.isDeleted = false;
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 

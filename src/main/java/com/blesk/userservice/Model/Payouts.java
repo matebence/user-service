@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 @Entity(name = "Payouts")
 @Table(name = "payouts", uniqueConstraints = {@UniqueConstraint(name = "payout_id", columnNames = "payout_id")})
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, scope = Payouts.class)
-@SQLDelete(sql = "UPDATE users SET is_deleted = TRUE, deleted_at = NOW() WHERE user_id = ?")
+@SQLDelete(sql = "UPDATE payouts SET is_deleted = TRUE, deleted_at = NOW() WHERE payout_id = ?")
 public class Payouts implements Serializable {
 
     @Id
@@ -40,10 +40,10 @@ public class Payouts implements Serializable {
     private Double amount;
 
     @Column(name = "accapted", nullable = false)
-    private Boolean accapted;
+    private Boolean accapted = false;
 
     @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     private Timestamp createdAt;
@@ -163,8 +163,6 @@ public class Payouts implements Serializable {
 
     @PrePersist
     protected void prePersist() {
-        this.isDeleted = false;
-        this.accapted = false;
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 

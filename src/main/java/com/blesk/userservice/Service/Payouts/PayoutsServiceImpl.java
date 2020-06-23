@@ -47,8 +47,8 @@ public class PayoutsServiceImpl implements PayoutsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Payouts createPayout(Payouts payouts, boolean su) {
-        Users users = this.accountService.getUser(payouts.getUsers().getUserId(), su);
+    public Payouts createPayout(Payouts payouts) {
+        Users users = this.accountService.getUser(payouts.getUsers().getUserId());
         if (users.getBalance() < payouts.getAmount()) return null;
         users.setBalance(users.getBalance() - payouts.getAmount());
 
@@ -62,12 +62,8 @@ public class PayoutsServiceImpl implements PayoutsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.WRITE)
-    public Boolean deletePayout(Payouts payouts, boolean su) {
-        if (su) {
-            return this.payoutsDAO.delete("payouts", "payout_id", payouts.getPayoutId());
-        } else {
-            return this.payoutsDAO.softDelete(payouts);
-        }
+    public Boolean deletePayout(Payouts payouts) {
+        return this.payoutsDAO.delete(payouts);
     }
 
     @Override
@@ -89,44 +85,35 @@ public class PayoutsServiceImpl implements PayoutsService {
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Payouts getPayout(Long payoutId, boolean su) {
-        if (su) {
-            return this.payoutsDAO.getItemByColumn(Payouts.class,"payoutId", payoutId.toString());
-        } else {
-            return this.payoutsDAO.getItemByColumn("payoutId", payoutId.toString());
-        }
+    public Payouts getPayout(Long payoutId) {
+        return this.payoutsDAO.getItemByColumn(Payouts.class, "payoutId", payoutId.toString());
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Payouts findPayoutByIban(String iban, boolean su) {
-        if (su){
-            return this.payoutsDAO.getItemByColumn(Payouts.class, "iban", iban);
-        } else {
-            return this.payoutsDAO.getItemByColumn("iban", iban);
-        }
+    public Payouts findPayoutByIban(String iban) {
+        return this.payoutsDAO.getItemByColumn(Payouts.class, "iban", iban);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public List<Payouts> getAllPayouts(int pageNumber, int pageSize, boolean su) {
-        if (su) {
-            return this.payoutsDAO.getAll(Payouts.class, pageNumber, pageSize);
-        } else {
-            return this.payoutsDAO.getAll(pageNumber, pageSize);
-        }
+    public List<Payouts> getAllPayouts(int pageNumber, int pageSize) {
+        return this.payoutsDAO.getAll(Payouts.class, pageNumber, pageSize);
     }
 
     @Override
     @Transactional
     @Lock(value = LockModeType.READ)
-    public Map<String, Object> searchForPayout(HashMap<String, HashMap<String, String>> criterias, boolean su) {
-        if (su) {
-            return this.payoutsDAO.searchBy(Payouts.class, criterias);
-        } else {
-            return this.payoutsDAO.searchBy(criterias);
-        }
+    public List<Payouts> getPayoutsForJoin(List<Long> ids, String columName) {
+        return this.payoutsDAO.getJoinValuesByColumn(Payouts.class, ids, columName);
+    }
+
+    @Override
+    @Transactional
+    @Lock(value = LockModeType.READ)
+    public Map<String, Object> searchForPayout(HashMap<String, HashMap<String, String>> criterias) {
+        return this.payoutsDAO.searchBy(Payouts.class, criterias);
     }
 }

@@ -10,7 +10,7 @@ public interface PlacesService {
 
     Places createPlace(Places places);
 
-    Boolean deletePlace(Long placeId);
+    Boolean deletePlace(Places places);
 
     Boolean updatePlace(Places places);
 
