@@ -1,6 +1,6 @@
 package com.blesk.userservice.Component.Feign;
 
-import com.blesk.userservice.DTO.Response;
+import com.blesk.userservice.DTO.Http.Response;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Value.Messages;
 import com.fasterxml.jackson.databind.ObjectMapper;

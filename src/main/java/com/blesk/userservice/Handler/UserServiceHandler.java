@@ -1,6 +1,6 @@
 package com.blesk.userservice.Handler;
 
-import com.blesk.userservice.DTO.Response;
+import com.blesk.userservice.DTO.Http.Response;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Value.Messages;
 import com.stripe.exception.StripeException;

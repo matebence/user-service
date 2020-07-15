@@ -1,5 +1,6 @@
 package com.blesk.userservice.Proxy;
 
+import com.blesk.userservice.DTO.Http.JoinAccountCritirias;
 import com.blesk.userservice.Model.Cache.Accounts;
 import com.blesk.userservice.Exception.UserServiceException;
 import com.blesk.userservice.Model.Users;
@@ -34,7 +35,7 @@ public interface AccountsServiceProxy {
 
     @PostMapping("api/accounts/join/{columName}")
     @Headers("Content-Type: application/json")
-    CollectionModel<Users> joinAccounts(@PathVariable("columName") String columName, @RequestBody List<Long> ids);
+    CollectionModel<Users> joinAccounts(@PathVariable("columName") String columName, @RequestBody JoinAccountCritirias joinAccountCritirias);
 
     @PostMapping("api/accounts/search")
     @Headers("Content-Type: application/json")
@@ -52,8 +53,8 @@ class AccountsServiceProxyFallback implements AccountsServiceProxy {
     }
 
     @Override
-    public CollectionModel<Users> joinAccounts(String columName, List<Long> ids) {
-        Iterable<Accounts> caches = this.cachesService.getAllCache(ids);
+    public CollectionModel<Users> joinAccounts(String columName, JoinAccountCritirias joinAccountCritirias) {
+        Iterable<Accounts> caches = this.cachesService.getAllCache(joinAccountCritirias.getIds());
         List<Users> users = new ArrayList<>();
         caches.forEach(cache -> {
             users.add(new Users(true, Long.parseLong(cache.getAccountId()), cache.getUserName(), cache.getEmail()));

@@ -1,6 +1,6 @@
 package com.blesk.userservice.Component.Jwt;
 
-import com.blesk.userservice.DTO.JwtMapper;
+import com.blesk.userservice.DTO.Mapper.JwtMapper;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -21,9 +21,6 @@ public class JwtConverterImpl extends DefaultAccessTokenConverter implements Jwt
         OAuth2Authentication oAuth2Authentication = super.extractAuthentication(map);
         JwtMapper jwtMapper = new JwtMapper();
 
-        if (map.get("login_id") != null)
-            jwtMapper.setLogin_id((Integer) map.get("login_id"));
-
         if (map.get("account_id") != null)
             jwtMapper.setAccount_id((Integer) map.get("account_id"));
 
@@ -38,9 +35,6 @@ public class JwtConverterImpl extends DefaultAccessTokenConverter implements Jwt
 
         if (map.get("client_id") != null)
             jwtMapper.setClient_id((String) map.get("client_id"));
-
-        if (map.get("activated") != null)
-            jwtMapper.setActivated((Boolean) map.get("activated"));
 
         oAuth2Authentication.setDetails(jwtMapper);
         return oAuth2Authentication;

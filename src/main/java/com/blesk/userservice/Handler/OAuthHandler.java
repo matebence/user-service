@@ -1,6 +1,6 @@
 package com.blesk.userservice.Handler;
 
-import com.blesk.userservice.DTO.Response;
+import com.blesk.userservice.DTO.Http.Response;
 import com.blesk.userservice.Value.Messages;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.security.access.AccessDeniedException;

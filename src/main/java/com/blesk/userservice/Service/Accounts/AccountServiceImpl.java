@@ -1,11 +1,13 @@
 package com.blesk.userservice.Service.Accounts;
 
+import com.blesk.userservice.DTO.Http.JoinAccountCritirias;
 import com.blesk.userservice.Model.Cache.Accounts;
 import com.blesk.userservice.DAO.Users.UsersDAOImpl;
 import com.blesk.userservice.Model.Users;
 import com.blesk.userservice.Proxy.AccountsServiceProxy;
 import com.blesk.userservice.Service.Accounts.Cache.CacheServiceImpl;
 import com.blesk.userservice.Service.Users.UsersServiceImpl;
+import com.blesk.userservice.Value.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.hateoas.CollectionModel;
@@ -38,7 +40,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     public Users getUser(Long accountId) {
         Users users = this.usersDAO.getItemByColumn(Users.class, "accountId", accountId.toString());
         if (users == null) return null;
-        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", Collections.singletonList(users.getAccountId()));
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", new JoinAccountCritirias(Collections.singletonList(users.getAccountId())));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         return this.performJoin(Collections.singletonList(users), accountDetails).iterator().next();
     }
@@ -49,7 +51,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     public List<Users> getAllUsers(int pageNumber, int pageSize) {
         List<Users> users = this.usersDAO.getAll(Users.class, pageNumber, pageSize);
         if (users == null) return null;
-        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", users.stream().map(Users::getAccountId).collect(Collectors.toList()));
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", new JoinAccountCritirias(users.stream().map(Users::getAccountId).collect(Collectors.toList())));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         return this.performJoin(users, accountDetails);
     }
@@ -58,10 +60,11 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     @Transactional
     @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias) {
+        String role = criterias.get(Keys.SEARCH).remove("role");
         Map<String, Object> users = this.usersDAO.searchBy(Users.class, criterias);
         if (users == null) return null;
         List<Users> user = (List<Users>) users.get("results");
-        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", user.stream().map(Users::getAccountId).collect(Collectors.toList()));
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", new JoinAccountCritirias(user.stream().map(Users::getAccountId).collect(Collectors.toList()), Collections.singletonList(role)));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         users.put("results", this.performJoin(user, accountDetails));
         return users;
@@ -73,7 +76,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     public List<Users> getUsersForJoin(List<Long> ids, String columName) {
         List<Users> users = this.usersDAO.getJoinValuesByColumn(Users.class, ids, columName);
         if (users == null) return null;
-        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", users.stream().map(Users::getAccountId).collect(Collectors.toList()));
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", new JoinAccountCritirias(users.stream().map(Users::getAccountId).collect(Collectors.toList())));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         return this.performJoin(users, accountDetails);
     }
