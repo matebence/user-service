@@ -1,8 +1,6 @@
-package com.blesk.userservice.DTO;
+package com.blesk.userservice.DTO.Mapper;
 
 public class JwtMapper {
-
-    private Integer login_id;
 
     private Integer account_id;
 
@@ -14,17 +12,7 @@ public class JwtMapper {
 
     private String client_id;
 
-    private Boolean activated;
-
     public JwtMapper() {
-    }
-
-    public Integer getLogin_id() {
-        return this.login_id;
-    }
-
-    public void setLogin_id(Integer login_id) {
-        this.login_id = login_id;
     }
 
     public Integer getAccount_id() {
@@ -65,13 +53,5 @@ public class JwtMapper {
 
     public void setClient_id(String client_id) {
         this.client_id = client_id;
-    }
-
-    public Boolean getActivated() {
-        return this.activated;
-    }
-
-    public void setActivated(Boolean activated) {
-        this.activated = activated;
     }
 }
