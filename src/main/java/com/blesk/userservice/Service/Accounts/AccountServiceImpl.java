@@ -60,11 +60,12 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     @Transactional
     @Lock(value = LockModeType.READ)
     public Map<String, Object> searchForUser(HashMap<String, HashMap<String, String>> criterias) {
-        String role = criterias.get(Keys.SEARCH).remove("role");
+        ArrayList<String> roles = new ArrayList<String>();
+        if (criterias.get(Keys.SEARCH) != null && criterias.get(Keys.SEARCH).get("roles") != null) roles.add(criterias.get(Keys.SEARCH).remove("roles"));
         Map<String, Object> users = this.usersDAO.searchBy(Users.class, criterias);
         if (users == null) return null;
         List<Users> user = (List<Users>) users.get("results");
-        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", new JoinAccountCritirias(user.stream().map(Users::getAccountId).collect(Collectors.toList()), Collections.singletonList(role)));
+        CollectionModel<Users> accountDetails = this.accountsServiceProxy.joinAccounts("accountId", new JoinAccountCritirias(user.stream().map(Users::getAccountId).collect(Collectors.toList()), roles));
         this.cachesService.createOrUpdatCache(this.performCaching(accountDetails));
         users.put("results", this.performJoin(user, accountDetails));
         return users;
@@ -107,9 +108,9 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     }
 
     private List<Users> performJoin(List<Users> users, CollectionModel<Users> accountDetails) {
-        if (accountDetails != null && accountDetails.getContent().size() == users.size()) {
+        if (accountDetails != null) {
             Iterator<Users> usersIterator = users.iterator();
-            Iterator<Users> accountDetailsIterator = accountDetails.iterator();
+            Iterator<Users> accountDetailsIterator = accountDetails.getContent().iterator();
 
             while (usersIterator.hasNext()) {
                 Users usersIteratorValue = usersIterator.next();
@@ -120,6 +121,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
                         usersIteratorValue.setEmail(accountDetailsIteratorValue.getEmail());
                     }
                 }
+                accountDetailsIterator = accountDetails.getContent().iterator();
             }
             return users;
         } else {
