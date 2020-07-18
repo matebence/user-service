@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.*;
 import javax.persistence.criteria.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Repository
 public class DAOImpl<T> implements DAO<T> {
@@ -159,7 +160,11 @@ public class DAOImpl<T> implements DAO<T> {
             if (criterias.get(Keys.SEARCH) != null) {
                 for (Object o : criterias.get(Keys.SEARCH).entrySet()) {
                     Map.Entry pair = (Map.Entry) o;
-                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(pair.getKey().toString())), "%" + pair.getValue().toString().toLowerCase() + "%"));
+                    if(Pattern.compile("^[\\D][a-zA-Z0-9 ]*$").matcher(pair.getValue().toString()).find()){
+                        predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(pair.getKey().toString())), "%" + pair.getValue().toString().toLowerCase() + "%"));
+                    }else{
+                        predicates.add(criteriaBuilder.equal(root.get(pair.getKey().toString()), pair.getValue().toString()));
+                    }
                 }
                 select.where(predicates.toArray(new Predicate[]{}));
             }
