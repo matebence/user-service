@@ -108,6 +108,7 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
     }
 
     private List<Users> performJoin(List<Users> users, CollectionModel<Users> accountDetails) {
+        List<Users> joinedValues = new ArrayList<Users>();
         if (accountDetails != null) {
             Iterator<Users> usersIterator = users.iterator();
             Iterator<Users> accountDetailsIterator = accountDetails.getContent().iterator();
@@ -119,11 +120,14 @@ public class AccountServiceImpl extends UsersServiceImpl implements AccountServi
                     if(usersIteratorValue.getAccountId().equals(accountDetailsIteratorValue.getAccountId())){
                         usersIteratorValue.setUserName(accountDetailsIteratorValue.getUserName());
                         usersIteratorValue.setEmail(accountDetailsIteratorValue.getEmail());
+                        joinedValues.add(usersIteratorValue);
                     }
                 }
                 accountDetailsIterator = accountDetails.getContent().iterator();
             }
-            return users;
+            users = null;
+            accountDetails = null;
+            return joinedValues;
         } else {
             return Collections.emptyList();
         }
