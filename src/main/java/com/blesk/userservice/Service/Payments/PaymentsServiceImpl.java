@@ -54,7 +54,7 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Transactional
     @Lock(value = LockModeType.WRITE)
     public Payments createPayment(Payments payments) throws StripeException {
-        Users users = this.accountService.getUser(payments.getUsers().getUserId());
+        Users users = this.accountService.getUser(payments.getUsers().getAccountId());
 
         if (payments.getAmount() < 10) return null;
         Map<String, Object> creditCard = new HashMap<>();
@@ -101,7 +101,7 @@ public class PaymentsServiceImpl implements PaymentsService {
         payment.setRefunded(refund.getStatus().equals("succeeded"));
 
         if ((!this.paymentsDAO.update(payment))) return new Payments();
-        Users users = this.accountService.getUser(payment.getUsers().getUserId());
+        Users users = this.accountService.getUser(payment.getUsers().getAccountId());
         this.emailsService.sendHtmlMesseage("Vrátenie platby", "refunds", new HashMap<>(), users);
         return payment;
     }
