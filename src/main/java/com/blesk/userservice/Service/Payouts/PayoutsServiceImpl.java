@@ -49,6 +49,8 @@ public class PayoutsServiceImpl implements PayoutsService {
     @Lock(value = LockModeType.WRITE)
     public Payouts createPayout(Payouts payouts) {
         Users users = this.accountService.getUser(payouts.getUsers().getAccountId());
+        payouts.setUsers(users);
+
         if (users.getBalance() < payouts.getAmount()) return null;
         users.setBalance(users.getBalance() - payouts.getAmount());
 
