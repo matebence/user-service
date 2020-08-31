@@ -55,6 +55,7 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Lock(value = LockModeType.WRITE)
     public Payments createPayment(Payments payments) throws StripeException {
         Users users = this.accountService.getUser(payments.getUsers().getAccountId());
+        payments.setUsers(users);
 
         if (payments.getAmount() < 10) return null;
         Map<String, Object> creditCard = new HashMap<>();
