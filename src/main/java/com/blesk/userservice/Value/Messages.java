@@ -66,7 +66,7 @@ public class Messages {
     public static final String DELETE_PAYOUT = "Odstránenie prevodu bola neúspešná";
     public static final String UPDATE_PAYOUT = "Aktualizovanie prevodu bola neúspešná";
     public static final String GET_PAYOUT = "Informácia o prevode penazí nebola nájdená";
-    public static final String GET_ALL_PAYOUTS = "Nenašli sa žiadné informacie a prevode penazí";
+    public static final String GET_ALL_PAYOUTS = "Nenašli sa žiadné informacie o prevode penazí";
 
     public static final String CREATE_PAYMENT = "Prevod penazí bola neúspešná, skúste znova";
     public static final String CREATE_REFUND = "Ľutujeme, ale peniaze sa nepodarilo pripísať späť na účet";
