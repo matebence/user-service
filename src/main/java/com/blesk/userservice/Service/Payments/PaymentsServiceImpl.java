@@ -118,10 +118,10 @@ public class PaymentsServiceImpl implements PaymentsService {
     @Transactional
     @Lock(value = LockModeType.WRITE)
     public Boolean updatePayment(Payments payment, Payments payments) {
-        payment.setUsers(payments.getUsers());
         payment.setCreditCard(payments.getCreditCard());
         payment.setCharge(payments.getCharge());
         payment.setRefund(payments.getRefund());
+        payment.setRefunded(payments.getRefunded());
 
         return this.paymentsDAO.update(payment);
     }
