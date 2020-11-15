@@ -75,7 +75,6 @@ public class PayoutsServiceImpl implements PayoutsService {
         Users users = usersDAO.getItemByColumn(Users.class, "userId", payout.getUsers().getUserId().toString());
         if (users.getBalance() < payout.getAmount()) return null;
 
-        payout.setUsers(payouts.getUsers());
         payout.setIban(payouts.getIban());
         payout.setAmount(payouts.getAmount());
         payout.setAccapted(payouts.getAccapted());
